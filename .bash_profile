@@ -871,24 +871,29 @@ loadenv() {
   fi
 }
 
-alias cx="cortex"
+if [ -f /usr/local/bin/cortex ]; then  # On mac
+  alias cx="cortex"
+else
+  if [ -f $HOME/src/cortex/cli/main.go ]; then
+    CLI_DIR="${HOME}/src/cortex/cli"
+  elif [ -f $CORTEX_LOCAL_DIR/cli ]; then
+    CLI_DIR="${CORTEX_LOCAL_DIR}/cli"
+  elif [ -f $CORTEX_LOCAL_DIR/cortex/cli ]; then
+    CLI_DIR="${CORTEX_LOCAL_DIR}/cortex/cli"
+  fi
 
-# if [ -f $HOME/src/cortex/cli/main.go ]; then
-#   CLI_DIR="${HOME}/src/cortex/cli"
-# elif [ -f $CORTEX_LOCAL_DIR/cli ]; then
-#   CLI_DIR="${CORTEX_LOCAL_DIR}/cli"
-# elif [ -f $CORTEX_LOCAL_DIR/cortex/cli ]; then
-#   CLI_DIR="${CORTEX_LOCAL_DIR}/cortex/cli"
-# fi
+  alias cortex="$CLI_DIR/cortex"
+  alias cx="$CLI_DIR/cortex"
+  alias cortexdev="go run $CLI_DIR/main.go"
+  alias cxd="go run $CLI_DIR/main.go"
+  alias cortexbuild="(cd $CLI_DIR && CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o cortex .)"
+  alias cxb="(cd $CLI_DIR && CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o cortex .)"
+fi
 
-# alias cortex="$CLI_DIR/cortex"
-# alias cx="$CLI_DIR/cortex"
-# alias cortexd="go run $CLI_DIR/main.go"
-# alias cxd="go run $CLI_DIR/main.go"
-# alias cxb="(cd $CLI_DIR && CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o cortex .)"
 
-# Old CLI (cloud python)
-# alias cx="python $CLI_DIR/cli.py"
+### CUSTOM COMPLETIONS ###
+# Documentation: http://fahdshariff.blogspot.com/2011/04/writing-your-own-bash-completion.html
+# Example:
 # _cx() {
 #   local cur=${COMP_WORDS[COMP_CWORD]}
 #   if [ "${COMP_CWORD}" == "1" ]; then
@@ -905,21 +910,6 @@ alias cx="cortex"
 # }
 # complete -o filenames -F _cx cx
 
-# Old CLI (local)
-# alias cx="python ${CORTEX_LOCAL_DIR}/local-cli/cli.py"
-# _cx() {
-#   local cur=${COMP_WORDS[COMP_CWORD]}
-#   if [ "${COMP_CWORD}" == "1" ]; then
-#     COMPREPLY=($(compgen -W "ingest train deploy predict clear-cache clear-datastore" "${cur}"))
-#   else
-#     COMPREPLY=($(compgen -f -- "${cur}"))
-#   fi
-# }
-# complete -o filenames -F _cx cx
-
-
-### CUSTOM COMPLETIONS ###
-# Documentation: http://fahdshariff.blogspot.com/2011/04/writing-your-own-bash-completion.html
 
 # SSH
 if [ -f ~/.ssh/config ]; then
