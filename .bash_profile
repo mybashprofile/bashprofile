@@ -256,6 +256,9 @@ if ! shopt -oq posix; then
       if ! command -v $cmd > /dev/null; then
         return 1
       fi
+
+      # return 0  # Re-generate all relevant bash completions
+
       if [ ! -z "$BASH_COMPLETION_COMPAT_DIR" ]; then
         if [ -f $BASH_COMPLETION_COMPAT_DIR/$expected_file ]; then
           return 1
@@ -311,6 +314,9 @@ if ! shopt -oq posix; then
     fi
     if ( should_complete "kubectl" ); then
       command_completion "kubectl completion bash" "kubectl"
+    fi
+    if ( should_complete "cortex" ); then
+      command_completion "cortex completion" "cortex"
     fi
 
     source $BASH_COMPLETION
@@ -974,7 +980,7 @@ complete -F _npm npm
 
 ### AUTOCOMPLETE BASH ALIASES ###
 
-alias_blacklist=( ssh cx )
+alias_blacklist=( ssh )
 
 if ! shopt -oq posix; then
   # SOURCE: https://github.com/cykerway/complete-alias
