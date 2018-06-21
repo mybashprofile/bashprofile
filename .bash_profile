@@ -893,11 +893,14 @@ if ! command -v cortex > /dev/null; then
       alias deploy="$CX_DIR/deploy/deploy.sh"
       source <(deploy completion)
     fi
+    if [ -f $CX_DIR/cli/cortex ]; then
+      source <(cortex completion)
+    fi
   fi
-fi
-
-if command -v cortex > /dev/null; then
-  source <(cortex completion)
+else
+  if command -v cortex > /dev/null; then
+    source <(cortex completion)
+  fi
 fi
 
 
