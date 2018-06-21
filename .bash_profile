@@ -890,7 +890,7 @@ if ! command -v cortex > /dev/null; then
     alias cxd="cortexdev"
     alias cxb="cortexbuild"
     if [ -f $CX_DIR/deploy/deploy.sh ]; then
-      alias deploy=$CX_DIR/deploy/deploy.sh
+      alias deploy="$CX_DIR/deploy/deploy.sh"
       source <(deploy completion)
     fi
   fi
