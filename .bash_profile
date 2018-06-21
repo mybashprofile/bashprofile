@@ -315,9 +315,6 @@ if ! shopt -oq posix; then
     if ( should_complete "kubectl" ); then
       command_completion "kubectl completion bash" "kubectl"
     fi
-    if ( should_complete "cortex" ); then
-      command_completion "cortex completion" "cortex"
-    fi
 
     source $BASH_COMPLETION
   fi
@@ -877,23 +874,24 @@ loadenv() {
   fi
 }
 
-if [ -f /usr/local/bin/cortex ]; then  # On mac
-  alias cx="cortex"
-else
-  if [ -f $HOME/src/cortex/cli/main.go ]; then
-    CLI_DIR="${HOME}/src/cortex/cli"
-  elif [ -f $CORTEX_LOCAL_DIR/cli ]; then
-    CLI_DIR="${CORTEX_LOCAL_DIR}/cli"
-  elif [ -f $CORTEX_LOCAL_DIR/cortex/cli ]; then
-    CLI_DIR="${CORTEX_LOCAL_DIR}/cortex/cli"
-  fi
-
+# Check for dev
+if [ -f $HOME/src/cortex/cli/main.go ]; then
+  CLI_DIR="${HOME}/src/cortex/cli"
+elif [ -f $CORTEX_LOCAL_DIR/cli/cli/main.go ]; then
+  CLI_DIR="${CORTEX_LOCAL_DIR}/cli"
+elif [ -f $CORTEX_LOCAL_DIR/cortex/cli/cli/main.go ]; then
+  CLI_DIR="${CORTEX_LOCAL_DIR}/cortex/cli"
+fi
+if [ -n "$CLI_DIR" ]; then
   alias cortex="$CLI_DIR/cortex"
-  alias cx="$CLI_DIR/cortex"
   alias cortexdev="go run $CLI_DIR/main.go"
-  alias cxd="go run $CLI_DIR/main.go"
   alias cortexbuild="(cd $CLI_DIR && CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o cortex .)"
-  alias cxb="(cd $CLI_DIR && CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o cortex .)"
+  alias cxd="cortexdev"
+  alias cxb="cortexbuild"
+fi
+
+if command -v cortex > /dev/null; then
+  . <(cortex completion)
 fi
 
 
