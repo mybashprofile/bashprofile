@@ -875,20 +875,24 @@ loadenv() {
 }
 
 # Check for dev
-if [ -f $HOME/src/cortex/cli/main.go ]; then
-  CX_DIR="${HOME}/src/cortex"
-elif [ -f $CORTEX_LOCAL_DIR/cli/main.go ]; then
-  CX_DIR="${CORTEX_LOCAL_DIR}"
-elif [ -f $CORTEX_LOCAL_DIR/cortex/cli/main.go ]; then
-  CX_DIR="${CORTEX_LOCAL_DIR}/cortex"
-fi
-if [ -n "$CX_DIR" ]; then
-  alias cortex="$CX_DIR/cli/cortex"
-  alias cortexdev="go run $CX_DIR/cli/main.go"
-  alias cortexbuild="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o cortex .)"
-  alias cxd="cortexdev"
-  alias cxb="cortexbuild"
-  source <($CX_DIR/deploy/deploy.sh completion)
+if ! command -v cortex > /dev/null; then
+  if [ -f $HOME/src/cortex/cli/main.go ]; then
+    CX_DIR="${HOME}/src/cortex"
+  elif [ -f $CORTEX_LOCAL_DIR/cli/main.go ]; then
+    CX_DIR="${CORTEX_LOCAL_DIR}"
+  elif [ -f $CORTEX_LOCAL_DIR/cortex/cli/main.go ]; then
+    CX_DIR="${CORTEX_LOCAL_DIR}/cortex"
+  fi
+  if [ -n "$CX_DIR" ]; then
+    alias cortex="$CX_DIR/cli/cortex"
+    alias cortexdev="go run $CX_DIR/cli/main.go"
+    alias cortexbuild="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o cortex .)"
+    alias cxd="cortexdev"
+    alias cxb="cortexbuild"
+    if [ -f $CX_DIR/deploy/deploy.sh ]; then
+      source <($CX_DIR/deploy/deploy.sh completion)
+    fi
+  fi
 fi
 
 if command -v cortex > /dev/null; then
