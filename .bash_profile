@@ -876,43 +876,46 @@ loadenv() {
 
 # Check for dev
 if [ -f $HOME/src/cortex/cli/main.go ]; then
-  CLI_DIR="${HOME}/src/cortex/cli"
-elif [ -f $CORTEX_LOCAL_DIR/cli/cli/main.go ]; then
-  CLI_DIR="${CORTEX_LOCAL_DIR}/cli"
-elif [ -f $CORTEX_LOCAL_DIR/cortex/cli/cli/main.go ]; then
-  CLI_DIR="${CORTEX_LOCAL_DIR}/cortex/cli"
+  CX_DIR="${HOME}/src/cortex"
+elif [ -f $CORTEX_LOCAL_DIR/cli/main.go ]; then
+  CX_DIR="${CORTEX_LOCAL_DIR}"
+elif [ -f $CORTEX_LOCAL_DIR/cortex/cli/main.go ]; then
+  CX_DIR="${CORTEX_LOCAL_DIR}/cortex"
 fi
-if [ -n "$CLI_DIR" ]; then
-  alias cortex="$CLI_DIR/cortex"
-  alias cortexdev="go run $CLI_DIR/main.go"
-  alias cortexbuild="(cd $CLI_DIR && CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o cortex .)"
+if [ -n "$CX_DIR" ]; then
+  alias cortex="$CX_DIR/cli/cortex"
+  alias cortexdev="go run $CX_DIR/cli/main.go"
+  alias cortexbuild="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o cortex .)"
   alias cxd="cortexdev"
   alias cxb="cortexbuild"
+  source <($CX_DIR/deploy/deploy.sh completion)
 fi
 
 if command -v cortex > /dev/null; then
-  . <(cortex completion)
+  source <(cortex completion)
 fi
 
 
 ### CUSTOM COMPLETIONS ###
-# Documentation: http://fahdshariff.blogspot.com/2011/04/writing-your-own-bash-completion.html
-# Example:
-# _cx() {
+# _deploy() {
 #   local cur=${COMP_WORDS[COMP_CWORD]}
 #   if [ "${COMP_CWORD}" == "1" ]; then
-#     COMPREPLY=($(compgen -W "ingest train deployment predict" "${cur}"))
-#   elif [ "${COMP_CWORD}" == "2" ] && [ "${COMP_WORDS[1]}" == "ingest" ]; then
-#     COMPREPLY=($(compgen -W "start stop" ${cur}))
-#   elif [ "${COMP_CWORD}" == "2" ] && [ "${COMP_WORDS[1]}" == "train" ]; then
-#     COMPREPLY=($(compgen -W "start stop" ${cur}))
-#   elif [ "${COMP_CWORD}" == "2" ] && [ "${COMP_WORDS[1]}" == "deployment" ]; then
-#     COMPREPLY=($(compgen -W "create delete" ${cur}))
+#     COMPREPLY=($(compgen -W "registry cluster operator" "${cur}"))
+#   elif [ "${COMP_CWORD}" == "2" ] && [ "${COMP_WORDS[1]}" == "registry" ]; then
+#     COMPREPLY=($(compgen -W "operator" ${cur}))
+#   elif [ "${COMP_CWORD}" == "2" ] && [ "${COMP_WORDS[1]}" == "cluster" ]; then
+#     COMPREPLY=($(compgen -W "stop" ${cur}))
+#   elif [ "${COMP_CWORD}" == "2" ] && [ "${COMP_WORDS[1]}" == "operator" ]; then
+#     COMPREPLY=($(compgen -W "cluster local stop" ${cur}))
+#   elif [ "${COMP_CWORD}" == "3" ] && [ "${COMP_WORDS[1]}" == "operator" ] && [ "${COMP_WORDS[2]}" == "cluster" ]; then
+#     COMPREPLY=($(compgen -W "stop" ${cur}))
 #   else
 #     COMPREPLY=($(compgen -f -- "${cur}"))
 #   fi
 # }
-# complete -o filenames -F _cx cx
+# complete -F _deploy deploy
+# OR
+# complete -o filenames -F _deploy deploy
 
 
 # SSH
@@ -978,7 +981,7 @@ complete -F _npm npm
 
 ### AUTOCOMPLETE BASH ALIASES ###
 
-alias_blacklist=( ssh cx cortex )
+alias_blacklist=( ssh cx cortex deploy )
 
 if ! shopt -oq posix; then
   # SOURCE: https://github.com/cykerway/complete-alias
