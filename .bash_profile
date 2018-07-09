@@ -32,19 +32,13 @@ MY_EDITOR_WAIT='subl -w'
 
 # Cortex
 CORTEX_LOCAL_DIR=$HOME/cortex
-
 CORTEX_LOGIN=ubuntu
-CORTEX_REMOTE_MOUNT=/home/$CORTEX_LOGIN/src/cortex/
-CORTEX_REMOTE_DEMO_MOUNT=/home/$CORTEX_LOGIN/demo/
+CORTEX_REMOTE_DIR=/home/$CORTEX_LOGIN/src/cortex/
+CORTEX_REMOTE_DEMO_DIR=/home/$CORTEX_LOGIN/demo/
+CORTEX_KEY=~/.ssh/cortex.pem
 
-CORTEX_CUSTOMER_DEV_IP=34.223.224.138
-CORTEX_CUSTOMER_DEV_KEY=~/.ssh/cortex_customer_dev_oregon.pem
-CORTEX_CUSTOMER_DEV_LOCAL_MOUNT=$HOME/mnt/cortex
-CORTEX_CUSTOMER_DEV_DEMO_MOUNT=$HOME/mnt/demo
-
-CORTEX_DEV_MANAGER_IP=18.236.172.149
-CORTEX_DEV_KEY=~/.ssh/cortex_dev_aws_oregon.pem
-CORTEX_DEV_MANAGER_LOCAL_MOUNT=$HOME/mnt/cortex-manager
+CORTEX_CLUSTER_DEV_IP=54.186.175.128
+CORTEX_LABS_DEV_IP=34.217.73.251
 
 # Load overridden personalizations
 if [ -f ~/.bash_profile_personalizations ]; then
@@ -820,58 +814,33 @@ alias dnuke='drmvolumes; drmcontainersall; drmimagesall'
 
 
 ### CORTEX ###
-cortex-demo() {
-  DEMO_DIR=$CORTEX_LOCAL_DIR/local-demo
-  $MY_EDITOR $DEMO_DIR
-  $MY_EDITOR $DEMO_DIR/raw_features.yaml $DEMO_DIR/credit/raw_data/credit.csv $DEMO_DIR/credit/ingest-config.yaml $DEMO_DIR/transformed_features.yaml $DEMO_DIR/credit/models/dnn/model.yaml $DEMO_DIR/credit/models/dnn/model.py $DEMO_DIR/credit/samples.json $DEMO_DIR/training-config.yaml
+
+mountcortex-cluster-dev() {
+  MOUNT_DIR=$HOME/mnt/cortex-cluster-dev
+  mkdir -p $MOUNT_DIR
+  sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR $MOUNT_DIR/
+  echo "mounted to ${MOUNT_DIR/${HOME}/\~}"
 }
 
-sshdev() {
-  ssh -i $CORTEX_CUSTOMER_DEV_KEY $CORTEX_LOGIN@$CORTEX_CUSTOMER_DEV_IP
+synccortex-cluster-dev() {
+  SYNC_DIR=$CORTEX_LOCAL_DIR/remote-cortex-cluster-dev
+  mkdir -p $SYNC_DIR
+  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR $SYNC_DIR
+  echo "synced to ${SYNC_DIR/${HOME}/\~}"
 }
 
-sshmanager() {
-  ssh -i $CORTEX_DEV_KEY $CORTEX_LOGIN@$CORTEX_DEV_MANAGER_IP
+mountcortex-labs-dev() {
+  MOUNT_DIR=$HOME/mnt/cortex-labs-dev
+  mkdir -p $MOUNT_DIR
+  sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_LABS_DEV_IP:$CORTEX_REMOTE_DIR $MOUNT_DIR/
+  echo "mounted to ${MOUNT_DIR/${HOME}/\~}"
 }
 
-mountdev() {
-  mkdir -p $CORTEX_CUSTOMER_DEV_LOCAL_MOUNT
-  sshfs -o local -o IdentityFile=$CORTEX_CUSTOMER_DEV_KEY $CORTEX_LOGIN@$CORTEX_CUSTOMER_DEV_IP:$CORTEX_REMOTE_MOUNT $CORTEX_CUSTOMER_DEV_LOCAL_MOUNT/
-  echo "mounted to ${CORTEX_CUSTOMER_DEV_LOCAL_MOUNT/${HOME}/\~}"
-}
-
-mountdemo() {
-  mkdir -p $CORTEX_CUSTOMER_DEV_DEMO_MOUNT
-  sshfs -o local -o IdentityFile=$CORTEX_CUSTOMER_DEV_KEY $CORTEX_LOGIN@$CORTEX_CUSTOMER_DEV_IP:$CORTEX_REMOTE_DEMO_MOUNT $CORTEX_CUSTOMER_DEV_DEMO_MOUNT/
-  echo "mounted to ${CORTEX_CUSTOMER_DEV_DEMO_MOUNT/${HOME}/\~}"
-}
-
-mountmanager() {
-  mkdir -p $CORTEX_DEV_MANAGER_LOCAL_MOUNT
-  sshfs -o local -o IdentityFile=$CORTEX_DEV_KEY $CORTEX_LOGIN@$CORTEX_DEV_MANAGER_IP:$CORTEX_REMOTE_MOUNT $CORTEX_DEV_MANAGER_LOCAL_MOUNT/
-  echo "mounted to ${CORTEX_DEV_MANAGER_LOCAL_MOUNT/${HOME}/\~}"
-}
-
-syncdev() {
-  mkdir -p $CORTEX_LOCAL_DIR/cortex-remote
-  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ -e "ssh -i ${CORTEX_CUSTOMER_DEV_KEY}" $CORTEX_LOGIN@$CORTEX_CUSTOMER_DEV_IP:/home/$CORTEX_LOGIN/src/cortex/ $CORTEX_LOCAL_DIR/cortex-remote
-  echo "synced to ${CORTEX_LOCAL_DIR/${HOME}/\~}/cortex-remote"
-}
-
-syncmanager() {
-  mkdir -p $CORTEX_LOCAL_DIR/cortex-remote-manager
-  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ -e "ssh -i ${CORTEX_DEV_KEY}" $CORTEX_LOGIN@$CORTEX_DEV_MANAGER_IP:/home/$CORTEX_LOGIN/src/cortex/ $CORTEX_LOCAL_DIR/cortex-remote-manager
-  echo "synced to ${CORTEX_LOCAL_DIR/${HOME}/\~}/cortex-remote-manager"
-}
-
-loadenv() {
-  cortex_dir=$(find_dir cortex)
-
-  if [ -z "${cortex_dir}" ]; then
-    echo "ERROR: you aren't in a Cortex directory (or subdirectory)"
-  else
-    eval $(python $cortex_dir/deploy/generate_constants.py)
-  fi
+synccortex-labs-dev() {
+  SYNC_DIR=$CORTEX_LOCAL_DIR/remote-cortex-labs-dev
+  mkdir -p $SYNC_DIR
+  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_LABS_DEV_IP:$CORTEX_REMOTE_DIR $SYNC_DIR
+  echo "synced to ${SYNC_DIR/${HOME}/\~}"
 }
 
 # Check for dev
@@ -898,9 +867,7 @@ if ! command -v cortex > /dev/null; then
     fi
   fi
 else
-  if command -v cortex > /dev/null; then
-    source <(cortex completion)
-  fi
+  source <(cortex completion 2>/dev/null)
 fi
 
 
