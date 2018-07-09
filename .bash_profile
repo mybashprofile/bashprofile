@@ -870,6 +870,8 @@ else
   source <(cortex completion 2>/dev/null)
 fi
 
+alias cxl="cortex logs"
+
 
 ### CUSTOM COMPLETIONS ###
 # _deploy() {
