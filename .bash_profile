@@ -878,6 +878,12 @@ if ! command -v cortex > /dev/null; then
     alias cortexbuild="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o cortex .)"
     alias cxd="cortexdev"
     alias cxb="cortexbuild"
+    cgrep() {
+      grep -R -C 3 --exclude-dir=.env --exclude-dir=.git --exclude-dir=vendor --exclude=*.pyc $1 $CX_DIR
+    }
+    cgrepi() {
+      grep -iR -C 3 --exclude-dir=.env --exclude-dir=.git --exclude-dir=vendor --exclude=*.pyc $1 $CX_DIR
+    }
     if [ -f $CX_DIR/deploy/deploy.sh ]; then
       alias deploy="$CX_DIR/deploy/deploy.sh"
       source <(deploy completion)
