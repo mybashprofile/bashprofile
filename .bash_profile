@@ -900,6 +900,19 @@ fi
 alias cxl="cortex logs"
 
 
+### MISC ###
+mounttest() {
+  MOUNT_DIR=$HOME/mnt/test
+  LOGIN=ubuntu
+  IP=34.213.20.219
+  KEY=$CORTEX_KEY
+
+  mkdir -p $MOUNT_DIR
+  sshfs -o local -o IdentityFile=$KEY $LOGIN@$IP:/home/$LOGIN $MOUNT_DIR/
+  echo "mounted to ${MOUNT_DIR/${HOME}/\~}"
+}
+
+
 ### CUSTOM COMPLETIONS ###
 # _deploy() {
 #   local cur=${COMP_WORDS[COMP_CWORD]}
