@@ -555,6 +555,7 @@ alias m='make'
 alias mc='make clean'
 alias screen='screen -x -U -R' # U=utf8, R=reattach if possible, x=multiplex
 alias ssh='ssh -oServerAliveInterval=10'
+alias watch='watch '  # The trailing space allows second word aliases to be expanded
 
 # Make "less" pretty
 export LESS_TERMCAP_mb=$'\E[01;31m'
