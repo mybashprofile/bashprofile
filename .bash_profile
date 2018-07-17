@@ -503,6 +503,7 @@ alias apt-cleanup='sudo apt-get autoclean && sudo apt-get autoremove && sudo apt
 
 ### ALIASES ###
 
+# Paths
 if [ -x /usr/bin/dircolors ]; then # We are in Linux
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
   alias ls='ls -F --color=auto'
@@ -541,6 +542,16 @@ alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias ......="cd ../../../../.."
 
+
+# Misc
+alias sublime='subl'
+alias s='subl'
+alias finder='open .'
+alias f='open .'
+alias c='clear'
+alias o='open'
+alias m='make'
+alias mc='make clean'
 alias cp='cp -i' # Ask to overwrite
 alias mv='mv -i' # Ask to overwrite
 alias ff='find . -name' # Find
@@ -548,14 +559,13 @@ alias ffi='find . -iname' # Find (ignore case)
 alias df='df -kh' # Filesystem info
 alias du='du -kh' # Directory info
 alias dirinfo='du -kh' # Directory info
-alias kill9='kill -9' # Kill process
-alias c='clear'
-alias o='open'
-alias m='make'
-alias mc='make clean'
-alias screen='screen -x -U -R' # U=utf8, R=reattach if possible, x=multiplex
 alias ssh='ssh -oServerAliveInterval=10'
+alias screen='screen -x -U -R' # U=utf8, R=reattach if possible, x=multiplex
 alias watch='watch -n 1 '  # The trailing space allows second word aliases to be expanded
+alias unmount='umount ~/mnt/*'
+alias unmount2='diskutil unmount ~/mnt/*'
+alias gssh='gcloud compute ssh'
+alias logoutall="pkill -u $(whoami)"
 
 # Make "less" pretty
 export LESS_TERMCAP_mb=$'\E[01;31m'
@@ -625,14 +635,6 @@ function kl() {
 }
 custom_complete 'kl' 'kubectl logs'
 
-# Misc
-alias sublime='subl'
-alias s='subl'
-alias finder='open .'
-alias f='open .'
-alias unmount='umount ~/mnt/*'
-alias unmount2='diskutil unmount ~/mnt/*'
-alias gssh='gcloud compute ssh'
 
 ### GIT ###
 
