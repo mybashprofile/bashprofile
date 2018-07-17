@@ -828,6 +828,7 @@ mountcortex-cluster-dev() {
   sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR $MOUNT_DIR/
   echo "mounted to ${MOUNT_DIR/${HOME}/\~}"
 }
+alias mountdev="mountcortex-cluster-dev"
 
 synccortex-cluster-dev() {
   SYNC_DIR=$CORTEX_LOCAL_DIR/remote-cortex-cluster-dev
