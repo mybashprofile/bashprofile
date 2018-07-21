@@ -838,6 +838,7 @@ synccortex-cluster-dev() {
   rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR $SYNC_DIR
   echo "synced to ${SYNC_DIR/${HOME}/\~}"
 }
+alias syncdev="synccortex-cluster-dev"
 
 mountcortex-labs-dev() {
   MOUNT_DIR=$HOME/mnt/cortex-labs-dev
