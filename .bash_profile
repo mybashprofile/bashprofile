@@ -869,10 +869,10 @@ synccortex-labs-prod() {
 }
 
 cgrep() {
-  grep -R -C 3 --exclude-dir=.env --exclude-dir=.git --exclude-dir=vendor --exclude=*.pyc $1 $CX_DIR
+  grep -R -C 3 --exclude-dir=.env --exclude-dir=.git --exclude-dir=vendor --exclude=*.pyc "$1" $CX_DIR
 }
 cgrepi() {
-  grep -iR -C 3 --exclude-dir=.env --exclude-dir=.git --exclude-dir=vendor --exclude=*.pyc $1 $CX_DIR
+  grep -iR -C 3 --exclude-dir=.env --exclude-dir=.git --exclude-dir=vendor --exclude=*.pyc "$1" $CX_DIR
 }
 
 # Check for dev
