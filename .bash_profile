@@ -890,8 +890,8 @@ if ! command -v cortex > /dev/null; then
     alias cortexbuild="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o cortex .)"
     alias cxd="cortexdev"
     alias cxb="cortexbuild"
-    if [ -f $CX_DIR/deploy/deploy.sh ]; then
-      alias deploy="$CX_DIR/deploy/deploy.sh"
+    if [ -f $CX_DIR/dev/deploy.sh ]; then
+      alias deploy="$CX_DIR/dev/deploy.sh"
       source <(deploy completion)
     fi
     if [ -f $CX_DIR/cli/cortex ]; then
