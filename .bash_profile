@@ -835,7 +835,7 @@ alias mountdev="mountcortex-cluster-dev"
 synccortex-cluster-dev() {
   SYNC_DIR=$CORTEX_LOCAL_DIR/remote-cortex-cluster-dev
   mkdir -p $SYNC_DIR
-  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR $SYNC_DIR
+  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ --exclude images/manager/src/operator/create_operator -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR $SYNC_DIR
   echo "synced to ${SYNC_DIR/${HOME}/\~}"
 }
 alias syncdev="synccortex-cluster-dev"
@@ -850,7 +850,7 @@ mountcortex-labs-dev() {
 synccortex-labs-dev() {
   SYNC_DIR=$CORTEX_LOCAL_DIR/remote-cortex-labs-dev
   mkdir -p $SYNC_DIR
-  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_LABS_DEV_IP:$CORTEX_REMOTE_DIR $SYNC_DIR
+  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ --exclude images/manager/src/operator/create_operator -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_LABS_DEV_IP:$CORTEX_REMOTE_DIR $SYNC_DIR
   echo "synced to ${SYNC_DIR/${HOME}/\~}"
 }
 
@@ -864,7 +864,7 @@ mountcortex-labs-prod() {
 synccortex-labs-prod() {
   SYNC_DIR=$CORTEX_LOCAL_DIR/remote-cortex-labs-prod
   mkdir -p $SYNC_DIR
-  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_LABS_PROD_IP:$CORTEX_REMOTE_DIR $SYNC_DIR
+  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ --exclude images/manager/src/operator/create_operator -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_LABS_PROD_IP:$CORTEX_REMOTE_DIR $SYNC_DIR
   echo "synced to ${SYNC_DIR/${HOME}/\~}"
 }
 
