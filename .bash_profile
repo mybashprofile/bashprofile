@@ -618,14 +618,17 @@ alias kp='kubectl get pod'
 alias kj='kubectl get job'
 alias ks='kubectl get service'
 alias kd='kubectl get deployment'
+alias ki='kubectl get ingress'
 alias kdp='kubectl describe pod'
 alias kdj='kubectl describe job'
 alias kds='kubectl describe service'
 alias kdd='kubectl describe deployment'
+alias kdi='kubectl describe ingress'
 alias kDp='kubectl delete pod'
 alias kDj='kubectl delete job'
 alias kDs='kubectl delete service'
 alias kDd='kubectl delete deployment'
+alias kDi='kubectl delete ingress'
 
 function kl() {
   until kubectl logs -f "$@"; do
