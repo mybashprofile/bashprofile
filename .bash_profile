@@ -37,8 +37,6 @@ CORTEX_REMOTE_DIR=/home/$CORTEX_LOGIN/src/github.com/cortexlabs/cortex/
 CORTEX_KEY=~/.ssh/cortex.pem
 
 CORTEX_CLUSTER_DEV_IP=54.186.175.128
-CORTEX_LABS_DEV_IP=54.186.80.160
-CORTEX_LABS_PROD_IP=34.217.73.251
 
 # Load overridden personalizations
 if [ -f ~/.bash_profile_personalizations ]; then
@@ -842,34 +840,6 @@ synccortex-cluster-dev() {
   echo "synced to ${SYNC_DIR/${HOME}/\~}"
 }
 alias syncdev="synccortex-cluster-dev"
-
-mountcortex-labs-dev() {
-  MOUNT_DIR=$HOME/mnt/cortex-labs-dev
-  mkdir -p $MOUNT_DIR
-  sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_LABS_DEV_IP:$CORTEX_REMOTE_DIR $MOUNT_DIR/
-  echo "mounted to ${MOUNT_DIR/${HOME}/\~}"
-}
-
-synccortex-labs-dev() {
-  SYNC_DIR=$CORTEX_LOCAL_DIR/remote-cortex-labs-dev
-  mkdir -p $SYNC_DIR
-  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ --exclude images/manager/src/operator/create_operator -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_LABS_DEV_IP:$CORTEX_REMOTE_DIR $SYNC_DIR
-  echo "synced to ${SYNC_DIR/${HOME}/\~}"
-}
-
-mountcortex-labs-prod() {
-  MOUNT_DIR=$HOME/mnt/cortex-labs-prod
-  mkdir -p $MOUNT_DIR
-  sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_LABS_PROD_IP:$CORTEX_REMOTE_DIR $MOUNT_DIR/
-  echo "mounted to ${MOUNT_DIR/${HOME}/\~}"
-}
-
-synccortex-labs-prod() {
-  SYNC_DIR=$CORTEX_LOCAL_DIR/remote-cortex-labs-prod
-  mkdir -p $SYNC_DIR
-  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ --exclude images/manager/src/operator/create_operator -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_LABS_PROD_IP:$CORTEX_REMOTE_DIR $SYNC_DIR
-  echo "synced to ${SYNC_DIR/${HOME}/\~}"
-}
 
 cgrep() {
   grep -R -C 3 --exclude-dir=.env --exclude-dir=.git --exclude-dir=vendor --exclude=*.pyc "$1" $CX_DIR
