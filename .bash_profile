@@ -33,8 +33,7 @@ MY_EDITOR_WAIT='subl -w'
 # Cortex
 CORTEX_LOCAL_DIR=$HOME/cortex
 CORTEX_LOGIN=ubuntu
-CORTEX_REMOTE_DIR=/home/$CORTEX_LOGIN/src/cortex/
-CORTEX_REMOTE_DEMO_DIR=/home/$CORTEX_LOGIN/demo/
+CORTEX_REMOTE_DIR=/home/$CORTEX_LOGIN/src/github.com/cortexlabs/cortex/
 CORTEX_KEY=~/.ssh/cortex.pem
 
 CORTEX_CLUSTER_DEV_IP=54.186.175.128
@@ -881,12 +880,10 @@ cgrepi() {
 
 # Check for dev
 if ! command -v cortex > /dev/null; then
-  if [ -f $HOME/src/cortex/cli/main.go ]; then
-    CX_DIR="${HOME}/src/cortex"
+  if [ -f $CORTEX_REMOTE_DIR/cli/main.go ]; then
+    CX_DIR="$CORTEX_REMOTE_DIR"
   elif [ -f $CORTEX_LOCAL_DIR/cli/main.go ]; then
-    CX_DIR="${CORTEX_LOCAL_DIR}"
-  elif [ -f $CORTEX_LOCAL_DIR/cortex/cli/main.go ]; then
-    CX_DIR="${CORTEX_LOCAL_DIR}/cortex"
+    CX_DIR="$CORTEX_LOCAL_DIR"
   fi
   if [ -n "$CX_DIR" ]; then
     alias cortex="$CX_DIR/cli/cortex"
