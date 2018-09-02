@@ -826,12 +826,19 @@ alias dnuke='drmvolumes; drmcontainersall; drmimagesall'
 ### CORTEX ###
 
 mountcortex-cluster-dev() {
-  MOUNT_DIR=$HOME/mnt/cortex-cluster-dev
+  MOUNT_DIR=$HOME/mnt/cortex
   mkdir -p $MOUNT_DIR
   sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR $MOUNT_DIR/
   echo "mounted to ${MOUNT_DIR/${HOME}/\~}"
+
+  MOUNT_DIR=$HOME/mnt/test
+  mkdir -p $MOUNT_DIR
+  sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:/home/$CORTEX_LOGIN/test $MOUNT_DIR/
+  echo "mounted to ${MOUNT_DIR/${HOME}/\~}"
 }
-alias mountdev="mountcortex-cluster-dev"
+alias md="mountcortex-cluster-dev"
+
+alias sd="subl $HOME/mnt/cortex $HOME/mnt/test"
 
 synccortex-cluster-dev() {
   SYNC_DIR=$CORTEX_LOCAL_DIR/remote-cortex-cluster-dev
@@ -877,14 +884,15 @@ alias cxl="cortex logs"
 
 
 ### MISC ###
-mounttest() {
-  MOUNT_DIR=$HOME/mnt/test
+mounttemp() {
+  MOUNT_DIR=$HOME/mnt/temp
   LOGIN=ubuntu
-  IP=34.213.20.219
+  IP=$CORTEX_CLUSTER_DEV_IP
   KEY=$CORTEX_KEY
+  REMOTE_DIR=/home/$LOGIN
 
   mkdir -p $MOUNT_DIR
-  sshfs -o local -o IdentityFile=$KEY $LOGIN@$IP:/home/$LOGIN $MOUNT_DIR/
+  sshfs -o local -o IdentityFile=$KEY $LOGIN@$IP:$REMOTE_DIR $MOUNT_DIR/
   echo "mounted to ${MOUNT_DIR/${HOME}/\~}"
 }
 
