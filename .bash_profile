@@ -868,6 +868,12 @@ if ! command -v cortex > /dev/null; then
     alias cortexbuild="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o cortex .)"
     alias cxd="cortexdev"
     alias cxb="cortexbuild"
+    alias operatorstart="$CX_DIR/dev/manager.sh update"
+    alias operatorupdate="$CX_DIR/dev/manager.sh update"
+    alias operatorstop="kubectl delete --ignore-not-found=true deployment operator"
+    alias kstart="$CX_DIR/dev/k8s.sh kops start && sleep 30 && $CX_DIR/dev/manager.sh install && operatorstop"
+    alias kstop="$CX_DIR/dev/k8s.sh kops stop"
+    alias clocal="$CX_DIR/dev/local.sh"
     if [ -f $CX_DIR/dev/deploy.sh ]; then
       alias deploy="$CX_DIR/dev/deploy.sh"
       source <(deploy completion)
