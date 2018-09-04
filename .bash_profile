@@ -877,7 +877,7 @@ if ! command -v cortex > /dev/null; then
     alias awsclear="$CX_DIR/dev/aws.sh delete-cache"
     alias clocal="$CX_DIR/dev/local.sh"
     alias registry="$CX_DIR/dev/registry.sh update dev"
-    alias registryo="$CX_DIR/dev/registry.sh update"
+    alias registryall="$CX_DIR/dev/registry.sh update"
     alias registrycreate="$CX_DIR/dev/registry.sh create"
     if [ -f $CX_DIR/dev/deploy.sh ]; then
       alias deploy="$CX_DIR/dev/deploy.sh"
