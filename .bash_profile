@@ -71,6 +71,23 @@ shopt -s expand_aliases # use aliases (enabled by default)
 set visible-stats on # when listing possible file completions, put / after directory names and * after programs
 
 
+### SSH AGENT ###
+if [[ "$OSTYPE" != "darwin"* ]]; then
+  if [[ -z "$SSH_AGENT_PID" || -z "$SSH_AUTH_SOCK" ]]; then
+    SSH_AGENT_PID=$(pgrep -o ssh-agent)
+    if [ ! -z ${SSH_AGENT_PID} ]; then
+      SSH_AUTH_SOCK=$(sudo lsof -wbp ${SSH_AGENT_PID} | awk "/\/tmp\/ssh.*\/agent.[[:digit:]]{3,}/ { print \$9 }")
+      if [ ! -z ${SSH_AUTH_SOCK} ]; then
+        export SSH_AGENT_PID=${SSH_AGENT_PID}
+        export SSH_AUTH_SOCK=${SSH_AUTH_SOCK}
+      fi
+    else
+      eval "$(ssh-agent -s)" > /dev/null
+    fi
+  fi
+fi
+
+
 ### UTILITIES ###
 
 BLACK="\033[0m"
