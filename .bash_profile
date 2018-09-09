@@ -33,7 +33,7 @@ MY_EDITOR_WAIT='subl -w'
 # Cortex
 CORTEX_LOCAL_DIR=$HOME/cortex
 CORTEX_LOGIN=ubuntu
-CORTEX_REMOTE_DIR=/home/$CORTEX_LOGIN/src/github.com/cortexlabs/cortex/
+CORTEX_REMOTE_DIR=/home/$CORTEX_LOGIN/src/github.com/cortexlabs/cortex
 CORTEX_KEY=~/.ssh/cortex.pem
 
 CORTEX_CLUSTER_DEV_IP=54.186.175.128
@@ -870,8 +870,8 @@ if ! command -v cortex > /dev/null; then
     alias cxb="cortexbuild"
     alias operatorstart="$CX_DIR/dev/manager.sh update"
     alias operatorupdate="$CX_DIR/dev/manager.sh update"
-    alias operatorstop="kubectl delete --ignore-not-found=true deployment operator"
-    alias kstart="$CX_DIR/dev/k8s.sh kops start && sleep 30 && $CX_DIR/dev/manager.sh install && operatorstop"
+    alias operatorstop="kubectl -n=cortex delete --ignore-not-found=true deployment operator"
+    alias kstart="$CX_DIR/dev/k8s.sh kops start && sleep 30 && $CX_DIR/dev/manager.sh install && kset && operatorstop"
     alias kstop="$CX_DIR/dev/k8s.sh kops stop"
     alias kset="$CX_DIR/dev/k8s.sh kops set"
     alias awsclear="$CX_DIR/dev/aws.sh delete-cache"
