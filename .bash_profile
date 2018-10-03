@@ -36,7 +36,7 @@ CORTEX_LOGIN=ubuntu
 CORTEX_REMOTE_DIR=/home/$CORTEX_LOGIN/src/github.com/cortexlabs/cortex
 CORTEX_KEY=~/.ssh/cortex.pem
 
-CORTEX_CLUSTER_DEV_IP=54.186.175.128
+CORTEX_CLUSTER_DEV_IP=54.212.212.117
 
 # Load overridden personalizations
 if [ -f ~/.bash_profile_personalizations ]; then
@@ -805,6 +805,9 @@ alias dprune='docker container prune -f'
 alias dkill='docker kill'
 alias dpush='docker push'
 alias dinspect='docker inspect'
+function drun() {
+  docker run --rm -it $1 /bin/sh
+}
 function dattach() {
   docker exec -it $1 /bin/sh
 }
@@ -868,16 +871,16 @@ if ! command -v cortex > /dev/null; then
     alias cortexbuild="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o cortex .)"
     alias cxd="cortexdev"
     alias cxb="cortexbuild"
-    alias cinstall="$CX_DIR/install/install.sh -c=$CX_DIR/configs/dev.sh install"
-    alias cupdate="$CX_DIR/install/install.sh -c=$CX_DIR/configs/dev.sh update"
-    alias cuninstall="$CX_DIR/install/install.sh -c=$CX_DIR/configs/dev.sh uninstall"
+    alias cinstall="$CX_DIR/install/install.sh -c=$CX_DIR/dev/cortex_config.sh install"
+    alias cupdate="$CX_DIR/install/install.sh -c=$CX_DIR/dev/cortex_config.sh update"
+    alias cuninstall="$CX_DIR/install/install.sh -c=$CX_DIR/dev/cortex_config.sh uninstall"
     alias olocal="$CX_DIR/dev/local.sh"
     alias ostart="cupdate"
     alias oupdate="cupdate"
     alias ostop="kubectl -n=cortex delete --ignore-not-found=true deployment operator"
-    alias kset="$CX_DIR/dev/k8s.sh kops set"
-    alias kstart="$CX_DIR/dev/k8s.sh kops start && cinstall && ostop"
-    alias kstop="$CX_DIR/dev/k8s.sh kops stop"
+    alias kset="$CX_DIR/dev/eks.sh set"
+    alias kstart="$CX_DIR/dev/eks.sh start && cinstall && ostop"
+    alias kstop="$CX_DIR/dev/eks.sh stop"
     alias awsclear="$CX_DIR/dev/aws.sh delete-cache"
     alias registry="$CX_DIR/dev/registry.sh update dev"
     alias registryall="$CX_DIR/dev/registry.sh update"
