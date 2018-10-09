@@ -34,6 +34,7 @@ MY_EDITOR_WAIT='subl -w'
 CORTEX_LOCAL_DIR=$HOME/cortex
 CORTEX_LOGIN=ubuntu
 CORTEX_REMOTE_DIR=/home/$CORTEX_LOGIN/src/github.com/cortexlabs/cortex
+CORTEX_LOCAL_DEV_DIR=$HOME/src/github.com/cortexlabs/cortex
 CORTEX_KEY=~/.ssh/cortex.pem
 
 CORTEX_CLUSTER_DEV_IP=54.212.212.117
@@ -485,6 +486,16 @@ function decrypt() {
   fi
 }
 
+# Returns "darwin", "linux", "windows", or "$OSTYPE"
+function get_os() {
+  case "$OSTYPE" in
+    darwin*)  echo "darwin" ;;
+    linux*)   echo "linux" ;;
+    msys*)    echo "windows" ;;
+    *)        echo "$OSTYPE" ;;
+  esac
+}
+
 # Alert on completion of long running commands. Ubuntu only. Usage: sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
@@ -846,7 +857,7 @@ alias sd="subl $HOME/mnt/cortex $HOME/mnt/test"
 synccortex-cluster-dev() {
   SYNC_DIR=$CORTEX_LOCAL_DIR/remote-cortex-cluster-dev
   mkdir -p $SYNC_DIR
-  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ --exclude images/manager/src/operator/create_operator -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR $SYNC_DIR
+  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ --exclude cli/cortex -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR $SYNC_DIR
   echo "synced to ${SYNC_DIR/${HOME}/\~}"
 }
 alias syncdev="synccortex-cluster-dev"
@@ -864,11 +875,13 @@ if ! command -v cortex > /dev/null; then
     CX_DIR="$CORTEX_REMOTE_DIR"
   elif [ -f $CORTEX_LOCAL_DIR/cli/main.go ]; then
     CX_DIR="$CORTEX_LOCAL_DIR"
+  elif [ -f $CORTEX_LOCAL_DEV_DIR/cli/main.go ]; then
+    CX_DIR="$CORTEX_LOCAL_DEV_DIR"
   fi
   if [ -n "$CX_DIR" ]; then
     alias cortex="$CX_DIR/cli/cortex"
     alias cortexdev="go run $CX_DIR/cli/main.go"
-    alias cortexbuild="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o cortex .)"
+    alias cortexbuild="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=$(get_os) GOARCH=amd64 go build -installsuffix cgo -o cortex .)"
     alias cxd="cortexdev"
     alias cxb="cortexbuild"
     alias cinstall="$CX_DIR/install.sh -c=$CX_DIR/dev/config/cortex.sh install"
