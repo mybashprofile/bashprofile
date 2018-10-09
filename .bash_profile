@@ -871,10 +871,10 @@ if ! command -v cortex > /dev/null; then
     alias cortexbuild="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o cortex .)"
     alias cxd="cortexdev"
     alias cxb="cortexbuild"
-    alias cinstall="$CX_DIR/install/install.sh -c=$CX_DIR/dev/cortex_config.sh install"
-    alias cupdate="$CX_DIR/install/install.sh -c=$CX_DIR/dev/cortex_config.sh update"
-    alias cuninstall="$CX_DIR/install/install.sh -c=$CX_DIR/dev/cortex_config.sh uninstall"
-    alias olocal="$CX_DIR/dev/local.sh"
+    alias cinstall="$CX_DIR/install.sh -c=$CX_DIR/dev/config/cortex.sh install"
+    alias cupdate="$CX_DIR/install.sh -c=$CX_DIR/dev/config/cortex.sh update"
+    alias cuninstall="$CX_DIR/install.sh -c=$CX_DIR/dev/config/cortex.sh uninstall"
+    alias olocal="$CX_DIR/dev/operator_local.sh"
     alias ostart="cupdate"
     alias oupdate="cupdate"
     alias ostop="kubectl -n=cortex delete --ignore-not-found=true deployment operator"
@@ -885,10 +885,6 @@ if ! command -v cortex > /dev/null; then
     alias registry="$CX_DIR/dev/registry.sh update dev"
     alias registryall="$CX_DIR/dev/registry.sh update"
     alias registrycreate="$CX_DIR/dev/registry.sh create"
-    if [ -f $CX_DIR/dev/deploy.sh ]; then
-      alias deploy="$CX_DIR/dev/deploy.sh"
-      source <(deploy completion)
-    fi
     if [ -f $CX_DIR/cli/cortex ]; then
       source <(cortex completion)
     fi
