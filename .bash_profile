@@ -857,7 +857,7 @@ alias sd="subl $HOME/mnt/cortex $HOME/mnt/test"
 synccortex-cluster-dev() {
   SYNC_DIR=$CORTEX_LOCAL_DIR/remote-cortex-cluster-dev
   mkdir -p $SYNC_DIR
-  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ --exclude cli/cortex -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR $SYNC_DIR
+  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ --exclude cli/cortex -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR/ $SYNC_DIR
   echo "synced to ${SYNC_DIR/${HOME}/\~}"
 }
 alias syncdev="synccortex-cluster-dev"
