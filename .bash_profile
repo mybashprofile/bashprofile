@@ -31,11 +31,14 @@ MY_EDITOR='subl'
 MY_EDITOR_WAIT='subl -w'
 
 # Cortex
-CORTEX_LOCAL_DIR=$HOME/cortex
+CORTEX_KEY=~/.ssh/cortex.pem
 CORTEX_LOGIN=ubuntu
 CORTEX_REMOTE_DIR=/home/$CORTEX_LOGIN/src/github.com/cortexlabs/cortex
-CORTEX_LOCAL_DEV_DIR=$HOME/src/github.com/cortexlabs/cortex
-CORTEX_KEY=~/.ssh/cortex.pem
+CORTEX_LOCAL_DIR=$HOME/src/github.com/cortexlabs/cortex
+CORTEX_TEST_LOCAL_DIR=$HOME/test
+CORTEX_MOUNT_DIR=$HOME/mnt/cortex
+CORTEX_TEST_MOUNT_DIR=$HOME/mnt/test
+CORTEX_SYNC_DIR=$HOME/cortex/remote
 
 CORTEX_CLUSTER_DEV_IP=54.212.212.117
 
@@ -839,28 +842,26 @@ alias dnuke='drmvolumes; drmcontainersall; drmimagesall'
 
 ### CORTEX ###
 
-mountcortex-cluster-dev() {
-  MOUNT_DIR=$HOME/mnt/cortex
-  mkdir -p $MOUNT_DIR
-  sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR $MOUNT_DIR/
-  echo "mounted to ${MOUNT_DIR/${HOME}/\~}"
+mountcortex() {
+  mkdir -p $CORTEX_MOUNT_DIR
+  sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR $CORTEX_MOUNT_DIR/
+  echo "mounted to ${CORTEX_MOUNT_DIR/${HOME}/\~}"
 
-  MOUNT_DIR=$HOME/mnt/test
-  mkdir -p $MOUNT_DIR
-  sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:/home/$CORTEX_LOGIN/test $MOUNT_DIR/
-  echo "mounted to ${MOUNT_DIR/${HOME}/\~}"
+  mkdir -p $CORTEX_TEST_MOUNT_DIR
+  sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:/home/$CORTEX_LOGIN/test $CORTEX_TEST_MOUNT_DIR/
+  echo "mounted to ${CORTEX_TEST_MOUNT_DIR/${HOME}/\~}"
 }
-alias md="mountcortex-cluster-dev"
+alias md="mountcortex"
 
-alias sd="subl $HOME/mnt/cortex $HOME/mnt/test"
+alias sdr="subl $CORTEX_MOUNT_DIR $CORTEX_TEST_MOUNT_DIR"
+alias sdl="subl $CORTEX_LOCAL_DIR $CORTEX_TEST_LOCAL_DIR"
 
-synccortex-cluster-dev() {
-  SYNC_DIR=$CORTEX_LOCAL_DIR/remote-cortex-cluster-dev
-  mkdir -p $SYNC_DIR
-  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ --exclude cli/cortex -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR/ $SYNC_DIR
-  echo "synced to ${SYNC_DIR/${HOME}/\~}"
+synccortex() {
+  mkdir -p $CORTEX_SYNC_DIR
+  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ --exclude cli/cortex -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR/ $CORTEX_SYNC_DIR
+  echo "synced to ${CORTEX_SYNC_DIR/${HOME}/\~}"
 }
-alias syncdev="synccortex-cluster-dev"
+alias sc="synccortex"
 
 cgrep() {
   grep -R -C 3 --exclude-dir=.env --exclude-dir=.git --exclude-dir=vendor --exclude=*.pyc "$1" $CX_DIR
@@ -870,40 +871,41 @@ cgrepi() {
 }
 
 # Check for dev
-if ! command -v cortex > /dev/null; then
-  if [ -f $CORTEX_REMOTE_DIR/cli/main.go ]; then
-    CX_DIR="$CORTEX_REMOTE_DIR"
-  elif [ -f $CORTEX_LOCAL_DIR/cli/main.go ]; then
-    CX_DIR="$CORTEX_LOCAL_DIR"
-  elif [ -f $CORTEX_LOCAL_DEV_DIR/cli/main.go ]; then
-    CX_DIR="$CORTEX_LOCAL_DEV_DIR"
-  fi
+if [ -f $CORTEX_REMOTE_DIR/cli/main.go ]; then
+  CX_DIR="$CORTEX_REMOTE_DIR"
+elif [ -f $CORTEX_LOCAL_DIR/cli/main.go ]; then
+  CX_DIR="$CORTEX_LOCAL_DIR"
+fi
+if [ -n "$CX_DIR" ]; then
+  alias cortex="$CX_DIR/cli/cortex"
+  alias cortexdev="go run $CX_DIR/cli/main.go"
+  alias cortexbuild="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=$(get_os) GOARCH=amd64 go build -installsuffix cgo -o cortex .)"
+  alias cxd="cortexdev"
+  alias cxb="cortexbuild"
+  alias cinstall="$CX_DIR/install.sh -c=$CX_DIR/dev/config/cortex.sh install"
+  alias cupdate="$CX_DIR/install.sh -c=$CX_DIR/dev/config/cortex.sh update"
+  alias cuninstall="$CX_DIR/install.sh -c=$CX_DIR/dev/config/cortex.sh uninstall"
+  alias olocal="$CX_DIR/dev/operator_local.sh"
+  alias ostart="cupdate"
+  alias oupdate="cupdate"
+  alias ostop="kubectl -n=cortex delete --ignore-not-found=true deployment operator"
+  alias kset="$CX_DIR/dev/eks.sh set"
+  alias kstart="$CX_DIR/dev/eks.sh start && cinstall && ostop"
+  alias kstop="$CX_DIR/dev/eks.sh stop"
+  alias awsclear="$CX_DIR/dev/aws.sh delete-cache"
+  alias registry="$CX_DIR/dev/registry.sh update dev"
+  alias registryall="$CX_DIR/dev/registry.sh update"
+  alias registrycreate="$CX_DIR/dev/registry.sh create"
+fi
+
+if command -v cortex > /dev/null; then
   if [ -n "$CX_DIR" ]; then
-    alias cortex="$CX_DIR/cli/cortex"
-    alias cortexdev="go run $CX_DIR/cli/main.go"
-    alias cortexbuild="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=$(get_os) GOARCH=amd64 go build -installsuffix cgo -o cortex .)"
-    alias cxd="cortexdev"
-    alias cxb="cortexbuild"
-    alias cinstall="$CX_DIR/install.sh -c=$CX_DIR/dev/config/cortex.sh install"
-    alias cupdate="$CX_DIR/install.sh -c=$CX_DIR/dev/config/cortex.sh update"
-    alias cuninstall="$CX_DIR/install.sh -c=$CX_DIR/dev/config/cortex.sh uninstall"
-    alias olocal="$CX_DIR/dev/operator_local.sh"
-    alias ostart="cupdate"
-    alias oupdate="cupdate"
-    alias ostop="kubectl -n=cortex delete --ignore-not-found=true deployment operator"
-    alias kset="$CX_DIR/dev/eks.sh set"
-    alias kstart="$CX_DIR/dev/eks.sh start && cinstall && ostop"
-    alias kstop="$CX_DIR/dev/eks.sh stop"
-    alias awsclear="$CX_DIR/dev/aws.sh delete-cache"
-    alias registry="$CX_DIR/dev/registry.sh update dev"
-    alias registryall="$CX_DIR/dev/registry.sh update"
-    alias registrycreate="$CX_DIR/dev/registry.sh create"
     if [ -f $CX_DIR/cli/cortex ]; then
       source <(cortex completion)
     fi
+  else
+    source <(cortex completion)
   fi
-else
-  source <(cortex completion 2>/dev/null)
 fi
 
 alias cxl="cortex logs"
