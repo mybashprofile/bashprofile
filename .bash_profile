@@ -842,7 +842,7 @@ alias dnuke='drmvolumes; drmcontainersall; drmimagesall'
 
 ### CORTEX ###
 
-mountcortex() {
+mountdev() {
   mkdir -p $CORTEX_MOUNT_DIR
   sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR $CORTEX_MOUNT_DIR/
   echo "mounted to ${CORTEX_MOUNT_DIR/${HOME}/\~}"
@@ -851,17 +851,16 @@ mountcortex() {
   sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:/home/$CORTEX_LOGIN/test $CORTEX_TEST_MOUNT_DIR/
   echo "mounted to ${CORTEX_TEST_MOUNT_DIR/${HOME}/\~}"
 }
-alias md="mountcortex"
+alias md="mountdev"
 
 alias sdr="subl $CORTEX_MOUNT_DIR $CORTEX_TEST_MOUNT_DIR"
 alias sdl="subl $CORTEX_LOCAL_DIR $CORTEX_TEST_LOCAL_DIR"
 
-synccortex() {
+syncdev() {
   mkdir -p $CORTEX_SYNC_DIR
   rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ --exclude cli/cortex -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR/ $CORTEX_SYNC_DIR
   echo "synced to ${CORTEX_SYNC_DIR/${HOME}/\~}"
 }
-alias sc="synccortex"
 
 cgrep() {
   grep -R -C 3 --exclude-dir=.env --exclude-dir=.git --exclude-dir=vendor --exclude=*.pyc "$1" $CX_DIR
