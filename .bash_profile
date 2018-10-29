@@ -31,16 +31,8 @@ MY_EDITOR='subl'
 MY_EDITOR_WAIT='subl -w'
 
 # Cortex
-CORTEX_KEY=~/.ssh/cortex.pem
-CORTEX_LOGIN=ubuntu
-CORTEX_REMOTE_DIR=/home/$CORTEX_LOGIN/src/github.com/cortexlabs/cortex
-CORTEX_LOCAL_DIR=$HOME/src/github.com/cortexlabs/cortex
-CORTEX_TEST_LOCAL_DIR=$HOME/test
-CORTEX_MOUNT_DIR=$HOME/mnt/cortex
-CORTEX_TEST_MOUNT_DIR=$HOME/mnt/test
-CORTEX_SYNC_DIR=$HOME/cortex/remote
-
-CORTEX_CLUSTER_DEV_IP=54.212.212.117
+CORTEX_SRC_PATH=src/github.com/cortexlabs/cortex
+CORTEX_TEST_PATH=test
 
 # Load overridden personalizations
 if [ -f ~/.bash_profile_personalizations ]; then
@@ -842,25 +834,36 @@ alias dnuke='drmvolumes; drmcontainersall; drmimagesall'
 
 ### CORTEX ###
 
-mountdev() {
-  mkdir -p $CORTEX_MOUNT_DIR
-  sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR $CORTEX_MOUNT_DIR/
-  echo "mounted to ${CORTEX_MOUNT_DIR/${HOME}/\~}"
-
-  mkdir -p $CORTEX_TEST_MOUNT_DIR
-  sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:/home/$CORTEX_LOGIN/test $CORTEX_TEST_MOUNT_DIR/
-  echo "mounted to ${CORTEX_TEST_MOUNT_DIR/${HOME}/\~}"
+function syncdev() {
+  syncsrc &
+  synctest &
+  trap "killall -9 unison" SIGINT
+  wait
 }
-alias md="mountdev"
 
-alias sdr="subl $CORTEX_MOUNT_DIR $CORTEX_TEST_MOUNT_DIR"
-alias sdl="subl $CORTEX_LOCAL_DIR $CORTEX_TEST_LOCAL_DIR"
-
-syncdev() {
-  mkdir -p $CORTEX_SYNC_DIR
-  rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ --exclude cli/cortex -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR/ $CORTEX_SYNC_DIR
-  echo "synced to ${CORTEX_SYNC_DIR/${HOME}/\~}"
+function syncsrc() {
+  synchelper "$HOME/$CORTEX_SRC_PATH" "ssh://dev/$CORTEX_SRC_PATH"
 }
+
+function synctest() {
+  synchelper "$HOME/$CORTEX_TEST_PATH" "ssh://dev/$CORTEX_TEST_PATH"
+}
+
+function synchelper() {
+  LOCAL_PATH="$1"
+  REMOTE_PATH="$2"
+
+  CORTEX_IGNORES='Name {*.swp,.*.swp,temp.*,*~,.*~,._*,.DS_Store,__pycache__,*.o,.*.o,*.tmp,.*.tmp,*.py[cod],.*.py[cod],.env,.venv,vendor,cortex}'
+  CORTEX_KEEPS='Name {}'
+
+  if [ ! -d "$LOCAL_PATH" ] || [ ! "$(ls -A $LOCAL_PATH)" ] ; then
+    mkdir -p "$LOCAL_PATH"
+    unison "$LOCAL_PATH" "$REMOTE_PATH" -ignore "$CORTEX_IGNORES" -ignorenot "$CORTEX_KEEPS" -force "$REMOTE_PATH" -confirmbigdel=false -batch
+  fi
+  unison "$LOCAL_PATH" "$REMOTE_PATH" -ignore "$CORTEX_IGNORES" -ignorenot "$CORTEX_KEEPS" -repeat watch -silent
+}
+
+alias sd="subl $HOME/$CORTEX_SRC_PATH $HOME/$CORTEX_TEST_PATH"
 
 cgrep() {
   grep -R -C 3 --exclude-dir=.env --exclude-dir=.git --exclude-dir=vendor --exclude=*.pyc "$1" $CX_DIR
@@ -870,10 +873,8 @@ cgrepi() {
 }
 
 # Check for dev
-if [ -f $CORTEX_REMOTE_DIR/cli/main.go ]; then
-  CX_DIR="$CORTEX_REMOTE_DIR"
-elif [ -f $CORTEX_LOCAL_DIR/cli/main.go ]; then
-  CX_DIR="$CORTEX_LOCAL_DIR"
+if [ -f "$HOME/$CORTEX_SRC_PATH/cli/main.go" ]; then
+  CX_DIR="$HOME/$CORTEX_SRC_PATH"
 fi
 if [ -n "$CX_DIR" ]; then
   alias cortex="$CX_DIR/cli/cortex"
@@ -909,13 +910,29 @@ fi
 
 alias cxl="cortex logs"
 
+# old
+# mountdev() {
+#   mkdir -p $CORTEX_MOUNT_DIR
+#   sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR $CORTEX_MOUNT_DIR/
+#   echo "mounted to ${CORTEX_MOUNT_DIR/${HOME}/\~}"
+
+#   mkdir -p $CORTEX_TEST_MOUNT_DIR
+#   sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:/home/$CORTEX_LOGIN/test $CORTEX_TEST_MOUNT_DIR/
+#   echo "mounted to ${CORTEX_TEST_MOUNT_DIR/${HOME}/\~}"
+# }
+# syncdev() {
+#   mkdir -p $CORTEX_SYNC_DIR
+#   rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ --exclude cli/cortex -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR/ $CORTEX_SYNC_DIR
+#   echo "synced to ${CORTEX_SYNC_DIR/${HOME}/\~}"
+# }
+
 
 ### MISC ###
 mounttemp() {
   MOUNT_DIR=$HOME/mnt/temp
   LOGIN=ubuntu
-  IP=$CORTEX_CLUSTER_DEV_IP
-  KEY=$CORTEX_KEY
+  IP=54.212.212.117
+  KEY="~/.ssh/cortex.pem"
   REMOTE_DIR=/home/$LOGIN
 
   mkdir -p $MOUNT_DIR
