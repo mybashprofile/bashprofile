@@ -840,27 +840,42 @@ function syncdev() {
   trap "killall -9 unison" SIGINT
   wait
 }
+function fixsyncdev() {
+  fixsyncsrc
+  fixsynctest
+}
 
 function syncsrc() {
   synchelper "$HOME/$CORTEX_SRC_PATH" "ssh://dev/$CORTEX_SRC_PATH"
+}
+function fixsyncsrc() {
+  fixsynchelper "$HOME/$CORTEX_SRC_PATH" "ssh://dev/$CORTEX_SRC_PATH"
 }
 
 function synctest() {
   synchelper "$HOME/$CORTEX_TEST_PATH" "ssh://dev/$CORTEX_TEST_PATH"
 }
+function fixsynctest() {
+  fixsynchelper "$HOME/$CORTEX_TEST_PATH" "ssh://dev/$CORTEX_TEST_PATH"
+}
+
+CORTEX_IGNORES='Name {*.swp,.*.swp,temp.*,*~,.*~,._*,.DS_Store,__pycache__,*.o,.*.o,*.tmp,.*.tmp,*.py[cod],.*.py[cod],.env,.venv,vendor,cortex}'
+CORTEX_KEEPS='Name {}'
 
 function synchelper() {
   LOCAL_PATH="$1"
   REMOTE_PATH="$2"
-
-  CORTEX_IGNORES='Name {*.swp,.*.swp,temp.*,*~,.*~,._*,.DS_Store,__pycache__,*.o,.*.o,*.tmp,.*.tmp,*.py[cod],.*.py[cod],.env,.venv,vendor,cortex}'
-  CORTEX_KEEPS='Name {}'
-
   if [ ! -d "$LOCAL_PATH" ] || [ ! "$(ls -A $LOCAL_PATH)" ] ; then
     mkdir -p "$LOCAL_PATH"
     unison "$LOCAL_PATH" "$REMOTE_PATH" -ignore "$CORTEX_IGNORES" -ignorenot "$CORTEX_KEEPS" -force "$REMOTE_PATH" -confirmbigdel=false -batch
   fi
   unison "$LOCAL_PATH" "$REMOTE_PATH" -ignore "$CORTEX_IGNORES" -ignorenot "$CORTEX_KEEPS" -repeat watch -silent
+}
+
+function fixsynchelper() {
+  LOCAL_PATH="$1"
+  REMOTE_PATH="$2"
+  unison "$LOCAL_PATH" "$REMOTE_PATH" -ignore "$CORTEX_IGNORES" -ignorenot "$CORTEX_KEEPS"
 }
 
 alias sd="subl $HOME/$CORTEX_SRC_PATH $HOME/$CORTEX_TEST_PATH"
