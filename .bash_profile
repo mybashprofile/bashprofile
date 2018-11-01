@@ -671,7 +671,11 @@ alias gcom='git checkout master'
 alias log='git log'
 alias glog='git log'
 alias pull='echo "git pull origin $(get_git_branch)"; git pull origin $(get_git_branch)'
+alias pullr='echo "git pull --rebase origin $(get_git_branch)"; git pull --rebase origin $(get_git_branch)'
+alias pullmr='git pull --rebase origin master'
+alias pullrm='pullmr'
 alias push='echo "git push origin $(get_git_branch)"; git push origin $(get_git_branch)'
+alias pushf='echo "git push -f origin $(get_git_branch)"; git push -f origin $(get_git_branch)'
 
 function rmbranch() {
   git branch -d $1
