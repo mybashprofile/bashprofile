@@ -898,10 +898,9 @@ if [ -f "$HOME/$CORTEX_SRC_PATH/cli/main.go" ]; then
 fi
 if [ -n "$CX_DIR" ]; then
   alias cortex="$CX_DIR/cli/cortex"
-  alias cortexdev="go run $CX_DIR/cli/main.go"
-  alias cortexbuild="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=$(get_os) GOARCH=amd64 go build -installsuffix cgo -o cortex .)"
-  alias cxd="cortexdev"
-  alias cxb="cortexbuild"
+  alias cxb="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=$(get_os) GOARCH=amd64 go build -installsuffix cgo -o cortex .)"
+  alias cxd="go run $CX_DIR/cli/main.go"
+  # alias cxd="cxb && cx"
   alias cinstall="$CX_DIR/cortex.sh -c=$CX_DIR/dev/config/cortex.sh install"
   alias cupdate="$CX_DIR/cortex.sh -c=$CX_DIR/dev/config/cortex.sh update"
   alias cuninstall="$CX_DIR/cortex.sh -c=$CX_DIR/dev/config/cortex.sh uninstall"
