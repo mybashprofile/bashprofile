@@ -900,6 +900,7 @@ if [ -n "$CX_DIR" ]; then
   alias cortex="$CX_DIR/cli/cortex"
   alias cxb="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=$(get_os) GOARCH=amd64 go build -installsuffix cgo -o cortex .)"
   alias cxd="go run $CX_DIR/cli/main.go"
+  alias t="$CX_DIR/build/test.sh"
   # alias cxd="cxb && cx"
   alias cinstall="$CX_DIR/cortex.sh -c=$CX_DIR/dev/config/cortex.sh install"
   alias cupdate="$CX_DIR/cortex.sh -c=$CX_DIR/dev/config/cortex.sh update"
