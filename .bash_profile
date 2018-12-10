@@ -66,6 +66,12 @@ shopt -s expand_aliases # use aliases (enabled by default)
 
 set visible-stats on # when listing possible file completions, put / after directory names and * after programs
 
+# Use history to complete already-typed prefix on up arrow
+if [[ $- == *i* ]]; then
+    bind '"\e[A": history-search-backward'
+    bind '"\e[B": history-search-forward'
+fi
+
 
 ### UTILITIES ###
 
