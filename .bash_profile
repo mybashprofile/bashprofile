@@ -182,6 +182,7 @@ else
 fi
 
 add_path "$GOPATH/bin"
+export GO111MODULE=on
 
 add_path "/usr/local/go/bin"  # Default location
 add_path "/usr/local/opt/go/libexec/bin"  # OSX + Homebrew
