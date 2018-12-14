@@ -686,9 +686,9 @@ alias push='echo "git push origin $(get_git_branch)"; git push origin $(get_git_
 alias pushf='echo "git push -f origin $(get_git_branch)"; git push -f origin $(get_git_branch)'
 
 function rmbranch() {
-  git branch -d $1
+  git branch -D $1
   git branch -dr origin/$1
-  # git push origin --delete $1  # Delete the remote branch
+  git push origin --delete $1  # Delete the remote branch
 }
 alias grmb='rmbranch'
 custom_complete 'grmb' 'git br -d'
