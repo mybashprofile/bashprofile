@@ -687,12 +687,18 @@ alias pushf='echo "git push -f origin $(get_git_branch)"; git push -f origin $(g
 
 function rmbranch() {
   git branch -D $1
-  git branch -dr origin/$1
+  git branch -Dr origin/$1
+}
+function rmbranchremote() {
+  rmbranch $1
   git push origin --delete $1  # Delete the remote branch
 }
 alias grmb='rmbranch'
-custom_complete 'grmb' 'git br -d'
+alias grmbr='rmbranchremote'
 custom_complete 'rmbranch' 'git br -d'
+custom_complete 'rmbranchremote' 'git br -d'
+custom_complete 'grmb' 'git br -d'
+custom_complete 'grmbr' 'git br -d'
 
 # To install LFS for first time: `brew install git-lfs` followed by `git lfs install`
 # To initialize in repo: `git lfs install`
