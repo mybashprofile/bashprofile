@@ -427,6 +427,8 @@ bashprofilepull() {
   echo "$bash_profile updated"
 }
 
+alias bashprofileupdate='bashprofilepull'
+
 
 ### MISC FUNCTIONS ###
 
