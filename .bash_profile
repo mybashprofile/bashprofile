@@ -50,7 +50,14 @@ HISTFILESIZE=5000 # set history file size
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'  # colored GCC warnings and errors
 export CLICOLOR=1 # ls colors for mac
 export LSCOLORS=ExFxBxDxCxegedabagacad # ls colors for mac
-export EDITOR=$MY_EDITOR_WAIT
+
+if command -v ${MY_EDITOR_WAIT% *} > /dev/null; then
+  export EDITOR=$MY_EDITOR_WAIT
+elif command -v ${MY_EDITOR% *} > /dev/null; then
+  export EDITOR=$MY_EDITOR
+elif command -v vim > /dev/null; then
+  export EDITOR=vim
+fi
 
 shopt -s histappend # append to the history file, don't overwrite it
 shopt -s checkwinsize # check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
