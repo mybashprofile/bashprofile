@@ -16,6 +16,10 @@
 #     brew install bash-completion@2
 
 
+if ((BASH_VERSINFO[0] < 4)); then
+  echo "WARNING: You are running an older version of bash; upgrade to >= 4.1"
+fi
+
 ### CHECK IF RUNNING INTERACTIVELY ###
 
 [ -z "$PS1" ] && return
@@ -42,14 +46,25 @@ fi
 
 ### CONFIGURATION ###
 
-HISTCONTROL=ignoreboth # don't put duplicate lines or lines starting with space in the history
-HISTSIZE=5000 # set in-memory history size
-HISTFILESIZE=5000 # set history file size
+HISTSIZE=100000  # set in-memory history size
+HISTFILESIZE=100000  # set history file size
+PROMPT_COMMAND='history -a'  # Record each line as it gets issued
+HISTCONTROL="erasedups:ignoreboth"  # don't put duplicate lines or lines starting with space in the history
+export HISTIGNORE="&:[ ]*:exit:ls:bg:fg:history:clear"  # Don't record some commands
+HISTTIMEFORMAT='%F %T '  # Use standard ISO 8601 timestamp
 
-# export IGNOREEOF=1 # need to press ctrl+D twice to exit
+# Use history to complete already-typed prefix on up arrow (https://codeinthehole.com/tips/the-most-important-command-line-tip-incremental-history-searching-with-inputrc/)
+if [[ $- == *i* ]]; then
+    bind '"\e[A": history-search-backward'
+    bind '"\e[B": history-search-forward'
+    bind '"\e[C": forward-char'
+    bind '"\e[D": backward-char'
+fi
+
+# export IGNOREEOF=1  # need to press ctrl+D twice to exit
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'  # colored GCC warnings and errors
-export CLICOLOR=1 # ls colors for mac
-export LSCOLORS=ExFxBxDxCxegedabagacad # ls colors for mac
+export CLICOLOR=1  # ls colors for mac
+export LSCOLORS=ExFxBxDxCxegedabagacad  # ls colors for mac
 
 if command -v ${MY_EDITOR_WAIT% *} > /dev/null; then
   export EDITOR=$MY_EDITOR_WAIT
@@ -59,25 +74,27 @@ elif command -v vim > /dev/null; then
   export EDITOR=vim
 fi
 
-shopt -s histappend # append to the history file, don't overwrite it
-shopt -s checkwinsize # check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
-shopt -s cdspell # ignore small typos in cd
-# shopt -s cdable_vars # if cd arg is not valid, assumes its a var defining a dir
-shopt -s cmdhist # save multi-line commands in history as single line
-shopt -s extglob # enable extended pattern-matching features
-# shopt -s dotglob # include dotfiles in pathname expansion
-shopt -s extglob # necessary for programmable completion.
-# shopt -s globstar # (LINUX only) the pattern "**" used in a pathname expansion context will match all files and zero or more directories and subdirectories.
-shopt -s progcomp # programmable completion (should be enabled by default)
-shopt -s expand_aliases # use aliases (enabled by default)
+shopt -s histappend  # append to the history file, don't overwrite it
+shopt -s checkwinsize  # check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
+# shopt -s cdable_vars  # if cd arg is not valid, assumes its a var defining a dir
+shopt -s cmdhist  # save multi-line commands in history as single line
+shopt -s extglob  # enable extended pattern-matching features
+# shopt -s dotglob  # include dotfiles in pathname expansion
+shopt -s extglob  # necessary for programmable completion.
+shopt -s globstar 2> /dev/null  # (LINUX only) the pattern "**" used in a pathname expansion context will match all files and zero or more directories and subdirectories.
+shopt -s progcomp  # programmable completion (should be enabled by default)
+shopt -s expand_aliases  # use aliases (enabled by default)
+shopt -s autocd 2> /dev/null  # Prepend cd to directory names automatically
+shopt -s dirspell 2> /dev/null  # Correct spelling errors during tab-completion
+shopt -s cdspell 2> /dev/null  # Correct spelling errors in arguments supplied to cd
 
-set visible-stats on # when listing possible file completions, put / after directory names and * after programs
+set visible-stats on  # when listing possible file completions, put / after directory names and * after programs
 
-# Use history to complete already-typed prefix on up arrow
-if [[ $- == *i* ]]; then
-    bind '"\e[A": history-search-backward'
-    bind '"\e[B": history-search-forward'
-fi
+bind Space:magic-space  # Enable history expansion with space (typing !!<space> will replace the !! with your last command)
+bind "set mark-symlinked-directories on"  # Immediately add a trailing slash when autocompleting symlinks to directories
+# bind "set show-all-if-ambiguous on"  # Display matches for ambiguous patterns at first tab press
+# bind "set completion-ignore-case on"  # Perform file completion in a case insensitive fashion
+# bind "set completion-map-case on"  # Treat hyphens and underscores as equivalent
 
 
 ### UTILITIES ###
@@ -521,6 +538,8 @@ alias apt-cleanup='sudo apt-get autoclean && sudo apt-get autoremove && sudo apt
 
 
 ### ALIASES ###
+
+alias sudo='sudo '  # Enable aliases to be sudo'd
 
 # Paths
 if [ -x /usr/bin/dircolors ]; then # We are in Linux
