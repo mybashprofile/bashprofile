@@ -938,8 +938,8 @@ if [ -f "$HOME/$CORTEX_SRC_PATH/cli/main.go" ]; then
   CX_DIR="$HOME/$CORTEX_SRC_PATH"
 fi
 if [ -n "$CX_DIR" ]; then
-  alias cortex="$CX_DIR/cli/cortex"
-  alias cxb="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=$(get_os) GOARCH=amd64 go build -installsuffix cgo -o cortex .)"
+  alias cortex="$CX_DIR/bin/cortex"
+  alias cxb="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=$(get_os) GOARCH=amd64 go build -installsuffix cgo -o $CX_DIR/bin/cortex .)"
   alias cxd="go run $CX_DIR/cli/main.go"
   alias t="$CX_DIR/build/test.sh"
   # alias cxd="cxb && cx"
@@ -961,7 +961,7 @@ fi
 
 if command -v cortex > /dev/null; then
   if [ -n "$CX_DIR" ]; then
-    if [ -f $CX_DIR/cli/cortex ]; then
+    if [ -f $CX_DIR/bin/cortex ]; then
       source <(cortex completion)
     fi
   else
@@ -983,7 +983,7 @@ alias cxl="cortex logs"
 # }
 # syncdev() {
 #   mkdir -p $CORTEX_SYNC_DIR
-#   rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ --exclude cli/cortex -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR/ $CORTEX_SYNC_DIR
+#   rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ --exclude bin/ -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR/ $CORTEX_SYNC_DIR
 #   echo "synced to ${CORTEX_SYNC_DIR/${HOME}/\~}"
 # }
 
