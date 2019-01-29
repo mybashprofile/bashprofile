@@ -596,7 +596,7 @@ alias ff='find . -name' # Find
 alias ffi='find . -iname' # Find (ignore case)
 alias df='df -kh' # Filesystem info
 alias du='du -kh' # Directory info
-alias dirinfo='du -kh' # Directory info
+alias du-size='du -shx * | sort -rh' # Directory info sorted by size
 alias ssh='ssh -oServerAliveInterval=10'
 alias screen='screen -x -U -R' # U=utf8, R=reattach if possible, x=multiplex
 alias watch='watch -n 1 '  # The trailing space allows second word aliases to be expanded
