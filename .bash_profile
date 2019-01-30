@@ -49,7 +49,7 @@ fi
 HISTSIZE=100000  # set in-memory history size
 HISTFILESIZE=100000  # set history file size
 PROMPT_COMMAND='history -a'  # Record each line as it gets issued
-HISTCONTROL="erasedups:ignoreboth"  # don't put duplicate lines or lines starting with space in the history
+HISTCONTROL="ignorespace"  # don't put lines starting with space in the history
 export HISTIGNORE="&:[ ]*:exit:ls:bg:fg:history:clear"  # Don't record some commands
 HISTTIMEFORMAT='%F %T '  # Use standard ISO 8601 timestamp
 
