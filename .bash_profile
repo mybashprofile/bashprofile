@@ -604,6 +604,7 @@ alias unmount='umount ~/mnt/*'
 alias unmount2='diskutil unmount ~/mnt/*'
 alias gssh='gcloud compute ssh'
 alias logoutall="pkill -u $(whoami)"
+alias findmissinglicenses='grep -r -L "Copyright 2019 Cortex Labs, Inc" *'
 
 # Make "less" pretty
 export LESS_TERMCAP_mb=$'\E[01;31m'
@@ -713,7 +714,7 @@ alias pullmr='git pull --rebase origin master'
 alias pullrm='pullmr'
 alias push='echo "git push origin $(get_git_branch)"; git push origin $(get_git_branch)'
 alias pushf='echo "git push -f origin $(get_git_branch)"; git push -f origin $(get_git_branch)'
-alias findmissinglicenses='grep -r -L "Copyright 2019 Cortex Labs, Inc" *'
+alias gprune='git remote prune origin'
 
 function rmbranch() {
   git branch -D $1
