@@ -867,6 +867,9 @@ function drunsh() {
   docker run --rm -it $1 /bin/sh
 }
 function dattach() {
+  docker exec -it $1 /bin/bash
+}
+function dattachsh() {
   docker exec -it $1 /bin/sh
 }
 function drm() {
