@@ -861,6 +861,9 @@ alias dkill='docker kill'
 alias dpush='docker push'
 alias dinspect='docker inspect'
 function drun() {
+  docker run --rm -it $1 /bin/bash
+}
+function drunsh() {
   docker run --rm -it $1 /bin/sh
 }
 function dattach() {
