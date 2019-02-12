@@ -979,7 +979,8 @@ if command -v cortex > /dev/null; then
 fi
 
 alias cxl="cortex logs"
-alias cxs="cortex status"
+alias cxs="cortex status -w"
+alias cxg="cortex get -w"
 
 # old
 # mountdev() {
