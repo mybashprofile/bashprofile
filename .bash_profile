@@ -604,7 +604,7 @@ alias unmount='umount ~/mnt/*'
 alias unmount2='diskutil unmount ~/mnt/*'
 alias gssh='gcloud compute ssh'
 alias logoutall="pkill -u $(whoami)"
-alias findmissinglicenses='grep -R --exclude-dir={docs,examples,dev/config} --exclude={LICENSE,requirements.txt,go.*,*.md,.*} -L "Copyright 2019 Cortex Labs, Inc" *'
+alias findmissinglicenses='grep -R --exclude-dir={docs,examples,bin,config} --exclude={LICENSE,Dockerfile,requirements.txt,go.*,*.md,.*} -L "Copyright 2019 Cortex Labs, Inc" *'
 
 # Make "less" pretty
 export LESS_TERMCAP_mb=$'\E[01;31m'
