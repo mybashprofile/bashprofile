@@ -947,6 +947,9 @@ if [ -f "$HOME/$CORTEX_SRC_PATH/cli/main.go" ]; then
   CX_DIR="$HOME/$CORTEX_SRC_PATH"
 fi
 if [ -n "$CX_DIR" ]; then
+  alias cmake="make --no-print-directory -C $HOME/$CORTEX_SRC_PATH"
+  alias cm="cmake"
+
   alias cortex="$CX_DIR/bin/cortex"
   alias cxb="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=$(get_os) GOARCH=amd64 go build -installsuffix cgo -o $CX_DIR/bin/cortex .)"
   alias cxd="go run $CX_DIR/cli/main.go"
