@@ -914,7 +914,7 @@ function fixsynctest() {
   fixsynchelper "$HOME/$CORTEX_TEST_PATH" "ssh://dev/$CORTEX_TEST_PATH"
 }
 
-CORTEX_IGNORES='Name {*.swp,.*.swp,temp.*,*~,.*~,._*,.DS_Store,__pycache__,*.o,.*.o,*.tmp,.*.tmp,*.py[cod],.*.py[cod],.env,.venv,vendor,cortex}'
+CORTEX_IGNORES='Name {*.swp,.*.swp,temp.*,*~,.*~,._*,.DS_Store,__pycache__,*.o,.*.o,*.tmp,.*.tmp,*.py[cod],.*.py[cod],.env,.venv,vendor,bin}'
 CORTEX_KEEPS='Name {}'
 
 function synchelper() {
