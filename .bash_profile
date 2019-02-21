@@ -946,29 +946,14 @@ if [ -f "$HOME/$CORTEX_SRC_PATH/cli/main.go" ]; then
   CX_DIR="$HOME/$CORTEX_SRC_PATH"
 fi
 if [ -n "$CX_DIR" ]; then
+  alias cortex="$CX_DIR/bin/cortex"
+
   alias make-cortex="make --no-print-directory -C $HOME/$CORTEX_SRC_PATH"
   alias mc="make-cortex"
   alias cm="make-cortex"
 
-  alias cortex="$CX_DIR/bin/cortex"
-  alias cxb="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=$(get_os) GOARCH=amd64 go build -installsuffix cgo -o $CX_DIR/bin/cortex .)"
+  alias cxb="make-cortex cli"
   alias cxd="go run $CX_DIR/cli/main.go"
-  alias t="$CX_DIR/build/test.sh"
-  # alias cxd="cxb && cx"
-  alias cinstall="$CX_DIR/cortex.sh -c=$CX_DIR/dev/config/cortex.sh install operator"
-  alias cupdate="$CX_DIR/cortex.sh -c=$CX_DIR/dev/config/cortex.sh update operator"
-  alias cuninstall="$CX_DIR/cortex.sh -c=$CX_DIR/dev/config/cortex.sh uninstall operator"
-  alias olocal="$CX_DIR/dev/operator_local.sh"
-  alias ostart="cupdate"
-  alias oupdate="cupdate"
-  alias ostop="kubectl -n=cortex delete --ignore-not-found=true deployment operator"
-  alias kset="$CX_DIR/dev/kops.sh set"
-  alias kstart="$CX_DIR/dev/kops.sh start && cinstall && ostop"
-  alias kstop="$CX_DIR/dev/kops.sh stop"
-  alias awsclear="$CX_DIR/dev/aws.sh delete-cache"
-  alias registry="$CX_DIR/dev/registry.sh update dev"
-  alias registryall="$CX_DIR/dev/registry.sh update"
-  alias registrycreate="$CX_DIR/dev/registry.sh create"
 fi
 
 if command -v cortex > /dev/null; then
