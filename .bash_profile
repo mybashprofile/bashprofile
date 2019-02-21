@@ -589,7 +589,6 @@ alias f='open .'
 alias c='clear'
 alias o='open'
 alias m='make'
-alias mc='make clean'
 alias cp='cp -i' # Ask to overwrite
 alias mv='mv -i' # Ask to overwrite
 alias ff='find . -name' # Find
@@ -947,8 +946,9 @@ if [ -f "$HOME/$CORTEX_SRC_PATH/cli/main.go" ]; then
   CX_DIR="$HOME/$CORTEX_SRC_PATH"
 fi
 if [ -n "$CX_DIR" ]; then
-  alias cmake="make --no-print-directory -C $HOME/$CORTEX_SRC_PATH"
-  alias cm="cmake"
+  alias make-cortex="make --no-print-directory -C $HOME/$CORTEX_SRC_PATH"
+  alias mc="make-cortex"
+  alias cm="make-cortex"
 
   alias cortex="$CX_DIR/bin/cortex"
   alias cxb="(cd $CX_DIR/cli && CGO_ENABLED=0 GOOS=$(get_os) GOARCH=amd64 go build -installsuffix cgo -o $CX_DIR/bin/cortex .)"
