@@ -859,12 +859,8 @@ alias dprune='docker container prune -f'
 alias dkill='docker kill'
 alias dpush='docker push'
 alias dinspect='docker inspect'
-function drun() {
-  docker run --rm -it $1 /bin/bash
-}
-function drunsh() {
-  docker run --rm -it $1 /bin/sh
-}
+alias drun='docker run --rm -it --entrypoint=/bin/bash'
+alias drunsh='docker run --rm -it --entrypoint=/bin/sh'
 function dattach() {
   docker exec -it $1 /bin/bash
 }
