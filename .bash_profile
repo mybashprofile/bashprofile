@@ -948,8 +948,32 @@ if [ -n "$CX_DIR" ]; then
   alias mc="make-cortex"
   alias cm="make-cortex"
 
-  alias cxb="make-cortex cli"
   alias cxd="go run $CX_DIR/cli/main.go"
+
+  # Make commands
+  alias olocal="make-cortex olocal"
+  alias oinstall="make-cortex oinstall"
+  alias oupdate="make-cortex oupdate"
+  alias ouninstall="make-cortex ouninstall"
+  alias ostop="make-cortex ostop"
+  alias eks-up-dev="make-cortex eks-up-dev"
+  alias eks-down="make-cortex eks-down"
+  alias eks-set="make-cortex eks-set"
+  alias kops-up-dev="make-cortex kops-up-dev"
+  alias kops-down="make-cortex kops-down"
+  alias kops-set="make-cortex kops-set"
+  alias registry-all="make-cortex registry-all"
+  alias registry-dev="make-cortex registry-dev"
+  alias registry-create="make-cortex registry-create"
+  alias cxb="make-cortex cli"
+  alias aws-clear-bucket="make-cortex aws-clear-bucket"
+  alias format="make-cortex format"
+  alias t="make-cortex test"
+  alias t-go="make-cortex test-go"
+  alias t-python="make-cortex test-go"
+  alias lint="make-cortex lint"
+  alias find-missing-license="make-cortex find-missing-license"
+  alias find-missing-version="make-cortex find-missing-version"
 fi
 
 if command -v cortex > /dev/null; then
