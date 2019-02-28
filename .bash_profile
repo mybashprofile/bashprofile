@@ -972,7 +972,6 @@ if [ -n "$CX_DIR" ]; then
   alias t-go="make-cortex test-go"
   alias t-python="make-cortex test-go"
   alias lint="make-cortex lint"
-  alias find-missing-license="make-cortex find-missing-license"
   alias find-missing-version="make-cortex find-missing-version"
 fi
 
