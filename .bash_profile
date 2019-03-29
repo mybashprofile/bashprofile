@@ -864,15 +864,19 @@ alias drunsh='docker run --rm -it --entrypoint=/bin/sh'
 function dattach() {
   docker exec -it $1 /bin/bash
 }
+custom_complete 'dattach' 'docker exec'
 function dattachsh() {
   docker exec -it $1 /bin/sh
 }
+custom_complete 'dattachsh' 'docker exec'
 function drm() {
   docker rm $1 >/dev/null 2>/dev/null
 }
+custom_complete 'drm' 'docker rm'
 function drmf() {
   docker rm -f $1 >/dev/null 2>/dev/null
 }
+custom_complete 'drmf' 'docker rm'
 alias drmi='docker rmi'
 alias drmcontainers='docker rm -v $(docker ps --no-trunc -aq -f status=exited) 2>/dev/null'
 alias drmcontainersall='docker rm -f -v $(docker ps --no-trunc -aq) 2>/dev/null'
