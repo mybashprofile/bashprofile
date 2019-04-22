@@ -955,7 +955,7 @@ if [ -n "$CX_DIR" ]; then
   alias cxd="go run $CX_DIR/cli/main.go"
 
   # Make commands
-  alias olocal="make-cortex olocal"
+  alias devstart="make-cortex devstart"
   alias oinstall="make-cortex oinstall"
   alias oupdate="make-cortex oupdate"
   alias ouninstall="make-cortex ouninstall"
