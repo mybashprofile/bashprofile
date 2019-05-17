@@ -492,25 +492,39 @@ function makezip() { zip -r "${1%%/}.zip" "$1" ; }
 
 function encrypt() {
   if [ -f $1 ] ; then
-    openssl aes-256-cbc -a -salt -in "${1}" -out "${1}-encrypted"
+    openssl aes-256-cbc -a -salt -in "$1" -out "${1}-encrypted"
+
     if [ "$2" == "-o" ]; then  # overwrite
-      rm -rf "${1}"
-      mv "${1}-encrypted" "${1}"
+      rm -rf "$1"
+      mv "${1}-encrypted" "$1"
+      echo "overwrote ${1}"
+    else
+      echo "created ${1}-encrypted"
     fi
   else
-    echo "'$1' is not a valid file!"
+    echo "'${1}' is not a valid file!"
   fi
 }
 
 function decrypt() {
   if [ -f $1 ] ; then
-    openssl aes-256-cbc -d -a -salt -in "${1}" -out "${1}-decrypted"
+    if [[ "$1" == *-encrypted ]]; then
+      out_path=${1::-10}
+    else
+      out_path="${1}-decrypted"
+    fi
+
+    openssl aes-256-cbc -d -a -salt -in "${1}" -out "$out_path"
+
     if [ "$2" == "-o" ]; then  # overwrite
       rm -rf "${1}"
-      mv "${1}-decrypted" "${1}"
+      mv "$out_path" "$1"
+      echo "overwrote ${1}"
+    else
+      echo "created ${out_path}"
     fi
   else
-    echo "'$1' is not a valid file!"
+    echo "'${1}' is not a valid file!"
   fi
 }
 
