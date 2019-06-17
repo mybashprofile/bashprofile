@@ -31,8 +31,8 @@ esac
 
 ### PESONALIZATIONS ###
 
-MY_EDITOR='subl'
-MY_EDITOR_WAIT='subl -w'
+MY_EDITOR='code'
+MY_EDITOR_WAIT='code -w'
 
 # Cortex
 CORTEX_SRC_PATH=src/github.com/cortexlabs/cortex
@@ -596,6 +596,7 @@ alias ......="cd ../../../../.."
 
 
 # Misc
+alias c='code'
 alias sublime='subl'
 alias s='subl'
 alias finder='open .'
@@ -846,19 +847,19 @@ function grm_num() {
 }
 alias grm1='grm_num 0'; alias grm2='grm_num 1'; alias grm3='grm_num 2'; alias grm4='grm_num 3'
 
-function s_num() {
+function c_num() {
   index=$1
   git_top_level=$(git rev-parse --show-toplevel)
   changed_files=( $(git diff --name-only) )
-  subl "${git_top_level}/${changed_files[index]}"
+  code "${git_top_level}/${changed_files[index]}"
 }
 alias s1='s_num 0'; alias s2='s_num 1'; alias s3='s_num 2'; alias s4='s_num 3'
 
-function su_num() {
+function cu_num() {
   index=$1
   git_top_level=$(git rev-parse --show-toplevel)
   new_files=( $(git ls-files --others --exclude-standard) )
-  subl "$(pwd)/${new_files[index]}"
+  code "$(pwd)/${new_files[index]}"
 }
 alias su1='su_num 0'; alias su2='su_num 1'; alias su3='su_num 2'; alias su4='su_num 3'
 
@@ -945,8 +946,6 @@ function fixsynchelper() {
   REMOTE_PATH="$2"
   unison "$LOCAL_PATH" "$REMOTE_PATH" -ignore "$CORTEX_IGNORES" -ignorenot "$CORTEX_KEEPS"
 }
-
-alias sd="subl $HOME/$CORTEX_SRC_PATH $HOME/$CORTEX_TEST_PATH"
 
 cgrep() {
   grep -R -C 3 --exclude-dir=.env --exclude-dir=.git --exclude-dir=vendor --exclude=*.pyc "$1" $CX_DIR
