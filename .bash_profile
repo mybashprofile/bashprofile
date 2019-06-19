@@ -597,11 +597,11 @@ alias ......="cd ../../../../.."
 
 # Misc
 alias c='code'
+# alias c='clear'
 alias sublime='subl'
 alias s='subl'
 alias finder='open .'
 alias f='open .'
-alias c='clear'
 alias o='open'
 alias m='make'
 alias cp='cp -i' # Ask to overwrite
