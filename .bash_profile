@@ -234,9 +234,9 @@ if [ ! -f $HOME/.screenrc ]; then
 fi
 
 if [ ! -f $HOME/.gitconfig ]; then
-  echo -e '[alias]\n    co = checkout\n    br = branch\n    st = status\n    ci = commit\n    a = add\n\n[core]\n    editor = vim\n\n[color]\n  branch = auto\n  diff = auto\n  status = auto\n\n[color "branch"]\n  current = yellow reverse\n  local = yellow\n  remote = green\n\n[color "diff"]\n  meta = yellow bold\n  frag = magenta bold\n  old = red bold\n  new = green bold\n\n[color "status"]\n  added = yellow\n  changed = green\n  untracked = cyan\n\n[push]\n  default = simple\n\n[filter "lfs"]\n  clean = git-lfs clean -- %f\n  smudge = git-lfs smudge -- %f\n  process = git-lfs filter-process\n  required = true\n\n[credential]\n  helper = cache' > $HOME/.gitconfig
+  echo -e '[alias]\n  co = checkout\n  br = branch\n  st = status\n  ci = commit\n  a = add\n\n[core]\n  editor = vim\n\n[color]\n  branch = auto\n  diff = auto\n  status = auto\n\n[color "branch"]\n  current = yellow reverse\n  local = yellow\n  remote = green\n\n[color "diff"]\n  meta = yellow bold\n  frag = magenta bold\n  old = red bold\n  new = green bold\n\n[color "status"]\n  added = yellow\n  changed = green\n  untracked = cyan\n\n[push]\n  default = simple\n\n[filter "lfs"]\n  clean = git-lfs clean -- %f\n  smudge = git-lfs smudge -- %f\n  process = git-lfs filter-process\n  required = true\n\n[credential]\n  helper = cache' > $HOME/.gitconfig
   created_echo "$HOME/.gitconfig"
-  echo -e 'Add this to the top of $HOME/.gitconfig:\n[user]\n    name = XXXXXX\n    email = XXXXXX\n'
+  echo -e 'Add this to the top of $HOME/.gitconfig:\n[user]\n  name = XXXXXX\n  email = XXXXXX\n'
 fi
 
 
