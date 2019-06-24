@@ -404,7 +404,7 @@ function get_bash_profile () {
   echo $bash_profile
 }
 
-sb() {
+cb() {
   bash_profile=$(get_bash_profile)
   $MY_EDITOR $bash_profile
 }
