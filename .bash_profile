@@ -970,6 +970,7 @@ if [ -n "$CX_DIR" ]; then
   # Make commands
   alias cxb="make-cortex cli"
   alias devstart="make-cortex devstart"
+  alias killdev="make-cortex killdev"
   alias up-dev="make-cortex cortex-up-dev"
   alias down="make-cortex cortex-down"
   alias registry-all="make-cortex registry-all"
