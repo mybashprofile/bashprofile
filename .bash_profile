@@ -944,7 +944,7 @@ function synchelper() {
 function fixsynchelper() {
   LOCAL_PATH="$1"
   REMOTE_PATH="$2"
-  unison "$LOCAL_PATH" "$REMOTE_PATH" -ignore "$CORTEX_IGNORES" -ignorenot "$CORTEX_KEEPS"
+  unison "$LOCAL_PATH" "$REMOTE_PATH" -ignorearchives -ignore "$CORTEX_IGNORES" -ignorenot "$CORTEX_KEEPS"
 }
 
 cgrep() {
