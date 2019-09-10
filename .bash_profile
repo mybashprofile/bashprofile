@@ -210,6 +210,7 @@ export GO111MODULE=on
 
 add_path "/usr/local/go/bin"  # Default location
 add_path "/usr/local/opt/go/libexec/bin"  # OSX + Homebrew
+add_path "$HOME/.cargo/bin"
 
 # rbenv
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
