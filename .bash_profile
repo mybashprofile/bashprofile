@@ -668,21 +668,54 @@ function venv() {
 
 # Kubernetes
 alias k='kubectl'
+
 alias kp='kubectl get pod'
 alias kj='kubectl get job'
 alias ks='kubectl get service'
 alias kd='kubectl get deployment'
+alias km='kubectl get daemonset'
 alias ki='kubectl get ingress'
+alias kv='kubectl get virtualservices'
+
+alias kpa='kubectl get --all-namespaces pod'
+alias kja='kubectl get --all-namespaces job'
+alias ksa='kubectl get --all-namespaces service'
+alias kda='kubectl get --all-namespaces deployment'
+alias kma='kubectl get --all-namespaces daemonset'
+alias kia='kubectl get --all-namespaces ingress'
+alias kva='kubectl get --all-namespaces virtualservices'
+
 alias kdp='kubectl describe pod'
 alias kdj='kubectl describe job'
 alias kds='kubectl describe service'
 alias kdd='kubectl describe deployment'
+alias kdm='kubectl describe daemonset'
 alias kdi='kubectl describe ingress'
+alias kdv='kubectl describe virtualservices'
+
+alias kjp='kubectl get -o json pod'
+alias kjj='kubectl get -o json job'
+alias kjs='kubectl get -o json service'
+alias kjd='kubectl get -o json deployment'
+alias kjm='kubectl get -o json daemonset'
+alias kji='kubectl get -o json ingress'
+alias kjv='kubectl get -o json virtualservices'
+
+alias kyp='kubectl get -o yaml pod'
+alias kyj='kubectl get -o yaml job'
+alias kys='kubectl get -o yaml service'
+alias kyd='kubectl get -o yaml deployment'
+alias kym='kubectl get -o yaml daemonset'
+alias kyi='kubectl get -o yaml ingress'
+alias kyv='kubectl get -o yaml virtualservices'
+
 alias kDp='kubectl delete pod'
 alias kDj='kubectl delete job'
 alias kDs='kubectl delete service'
 alias kDd='kubectl delete deployment'
+alias kDm='kubectl delete daemonset'
 alias kDi='kubectl delete ingress'
+alias kDv='kubectl delete virtualservices'
 
 function kl() {
   until kubectl logs -f "$@"; do
