@@ -29,7 +29,7 @@ case $- in
 esac
 
 
-### PESONALIZATIONS ###
+### PERSONALIZATIONS ###
 
 MY_EDITOR='code'
 MY_EDITOR_WAIT='code -w'
@@ -785,7 +785,12 @@ alias pullmr='git pull --rebase origin master'
 alias pullrm='pullmr'
 alias push='echo "git push origin $(get_git_branch)"; git push origin $(get_git_branch)'
 alias pushf='echo "git push -f origin $(get_git_branch)"; git push -f origin $(get_git_branch)'
+alias gitprune='git remote prune origin'
 alias gprune='git remote prune origin'
+alias gitprunelocal='git checkout master && git fetch --prune && git branch -r | awk "{print \$1}" | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk "{print \$1}" | xargs git branch -d'
+alias gprunelocal='git checkout master && git fetch --prune && git branch -r | awk "{print \$1}" | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk "{print \$1}" | xargs git branch -d'
+alias gitpruneall='git remote prune origin git checkout master && git fetch --prune && git branch -r | awk "{print \$1}" | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk "{print \$1}" | xargs git branch -d'
+alias gpruneall='git remote prune origin git checkout master && git fetch --prune && git branch -r | awk "{print \$1}" | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk "{print \$1}" | xargs git branch -d'
 
 function rmbranch() {
   git branch -D $1
