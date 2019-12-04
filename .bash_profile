@@ -965,7 +965,7 @@ alias dnuke='drmvolumes; drmcontainersall; drmimagesall'
 
 ### CORTEX ###
 
-export CORTEX_TELEMETRY=false
+export CORTEX_DISABLE_TELEMETRY=true
 
 function syncdev() {
   syncsrc &
