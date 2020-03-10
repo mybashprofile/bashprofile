@@ -1017,17 +1017,6 @@ alias kpp='kubectl get pod -l apiName'
 alias kppw='watch kubectl get pod -l apiName'
 alias kpwp='watch kubectl get pod -l apiName'
 
-function syncdev() {
-  syncsrc &
-  synctest &
-  trap "killall -9 unison" SIGINT
-  wait
-}
-function fixsyncdev() {
-  fixsyncsrc
-  fixsynctest
-}
-
 function syncsrc() {
   synchelper "$HOME/$CORTEX_SRC_PATH" "ssh://dev/$CORTEX_SRC_PATH"
 }
@@ -1035,12 +1024,22 @@ function fixsyncsrc() {
   fixsynchelper "$HOME/$CORTEX_SRC_PATH" "ssh://dev/$CORTEX_SRC_PATH"
 }
 
-function synctest() {
-  synchelper "$HOME/$CORTEX_TEST_PATH" "ssh://dev/$CORTEX_TEST_PATH"
-}
-function fixsynctest() {
-  fixsynchelper "$HOME/$CORTEX_TEST_PATH" "ssh://dev/$CORTEX_TEST_PATH"
-}
+# function synctest() {
+#   synchelper "$HOME/$CORTEX_TEST_PATH" "ssh://dev/$CORTEX_TEST_PATH"
+# }
+# function fixsynctest() {
+#   fixsynchelper "$HOME/$CORTEX_TEST_PATH" "ssh://dev/$CORTEX_TEST_PATH"
+# }
+# function syncdev() {
+#   syncsrc &
+#   synctest &
+#   trap "killall -9 unison" SIGINT
+#   wait
+# }
+# function fixsyncdev() {
+#   fixsyncsrc
+#   fixsynctest
+# }
 
 CORTEX_IGNORES='Name {*.swp,.*.swp,temp.*,*~,.*~,._*,.DS_Store,__pycache__,*.o,.*.o,*.tmp,.*.tmp,*.py[cod],.*.py[cod],.env,.venv,vendor,bin,*.onnx,*.zip}'
 CORTEX_KEEPS='Name {}'
