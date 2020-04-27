@@ -973,6 +973,7 @@ alias su1='su_num 0'; alias su2='su_num 1'; alias su3='su_num 2'; alias su4='su_
 
 ### DOCKER ###
 
+alias dl='docker logs -f'
 alias dps='docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.Status}}"'
 alias dpsa='docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.Status}}" -a'
 alias dimages='docker images'
