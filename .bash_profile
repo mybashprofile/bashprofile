@@ -1016,7 +1016,9 @@ export CORTEX_TELEMETRY_SEGMENT_WRITE_KEY="0WvoJyCey9z1W2EW7rYTPJUMRYat46dl"
 
 # ca stands for "curl api"
 function ca() {
-  eval $(cortex get $1 | grep -o 'curl \(.*\)')
+  cmd=$(cortex get $1 | grep -o 'curl \(.*\)')
+  echo $cmd
+  eval $cmd
   echo
 }
 
