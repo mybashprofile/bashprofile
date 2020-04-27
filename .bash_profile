@@ -1014,6 +1014,11 @@ export CORTEX_DEV_DEFAULT_PREDICTOR_IMAGE_REGISTRY="764403040460.dkr.ecr.us-west
 export CORTEX_TELEMETRY_SENTRY_DSN="https://c334df915c014ffa93f2076769e5b334@sentry.io/1848098"
 export CORTEX_TELEMETRY_SEGMENT_WRITE_KEY="0WvoJyCey9z1W2EW7rYTPJUMRYat46dl"
 
+# ca stands for "curl api"
+function ca() {
+  eval $(cortex get $1 | grep -o 'curl \(.*\)')
+}
+
 alias kpp='kubectl get pod -l apiName'
 alias kppw='watch kubectl get pod -l apiName'
 alias kpwp='watch kubectl get pod -l apiName'
