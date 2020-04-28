@@ -646,7 +646,6 @@ alias f='open .'
 alias o='open'
 alias m='make'
 alias cp='cp -i' # Ask to overwrite
-alias mv='mv -i' # Ask to overwrite
 alias ff='find . -name' # Find
 alias ffi='find . -iname' # Find (ignore case)
 alias df='df -kh' # Filesystem info
@@ -660,6 +659,17 @@ alias unmount2='diskutil unmount ~/mnt/*'
 alias gssh='gcloud compute ssh'
 alias logoutall="pkill -u $(whoami)"
 alias findmissinglicenses='grep -R --exclude-dir={docs,examples,bin,config} --exclude={LICENSE,Dockerfile,requirements.txt,go.*,*.md,.*} -L "Copyright 2019 Cortex Labs, Inc" *'
+
+# alias mv='mv -i' # Ask to overwrite
+function mv() {
+  if [ "$#" -ne 1 ] || [ ! -e "$1" ]; then
+    command mv -i "$@"
+    return
+  fi
+  read -ei "$1" newfilename
+  mkdir -p $(dirname $newfilename)
+  command mv -i -v -- "$1" "$newfilename"
+}
 
 # Make "less" pretty
 export LESS_TERMCAP_mb=$'\E[01;31m'
