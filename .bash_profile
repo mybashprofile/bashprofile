@@ -1117,10 +1117,10 @@ fi
 if command -v cortex > /dev/null; then
   if [ -n "$CX_DIR" ]; then
     if [ -f $CX_DIR/bin/cortex ]; then
-      source <(cortex completion)
+      source <(cortex completion bash)
     fi
   else
-    source <(cortex completion)
+    source <(cortex completion bash)
   fi
 fi
 
