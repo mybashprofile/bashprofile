@@ -1037,48 +1037,16 @@ alias kpp='kubectl get pod -l apiName'
 alias kppw='watch kubectl get pod -l apiName'
 alias kpwp='watch kubectl get pod -l apiName'
 
-function syncsrc() {
-  synchelper "$HOME/$CORTEX_SRC_PATH" "ssh://dev/$CORTEX_SRC_PATH"
+# This only needs to be executed once to create the session
+# Run `mutagen daemon register` for it to auto-start at startup; otherwise, run `mutagen sync monitor src` to start the session
+sync-init() {
+  mutagen sync create $HOME/$CORTEX_SRC_PATH ubuntu@dev:~/$CORTEX_SRC_PATH --name=src --sync-mode=two-way-safe --no-ignore-vcs --max-staging-file-size="10 MB" --ignore=*.swp,.*.swp,temp.*,*~,.*~,._*,.DS_Store,__pycache__,*.o,.*.o,*.tmp,.*.tmp,*.py[cod],.*.py[cod],.env,.venv,vendor,bin,*.onnx,*.pb,*.data*,*.zip
 }
-function fixsyncsrc() {
-  fixsynchelper "$HOME/$CORTEX_SRC_PATH" "ssh://dev/$CORTEX_SRC_PATH"
-}
-
-# function synctest() {
-#   synchelper "$HOME/$CORTEX_TEST_PATH" "ssh://dev/$CORTEX_TEST_PATH"
-# }
-# function fixsynctest() {
-#   fixsynchelper "$HOME/$CORTEX_TEST_PATH" "ssh://dev/$CORTEX_TEST_PATH"
-# }
-# function syncdev() {
-#   syncsrc &
-#   synctest &
-#   trap "killall -9 unison" SIGINT
-#   wait
-# }
-# function fixsyncdev() {
-#   fixsyncsrc
-#   fixsynctest
-# }
-
-CORTEX_IGNORES='Name {*.swp,.*.swp,temp.*,*~,.*~,._*,.DS_Store,__pycache__,*.o,.*.o,*.tmp,.*.tmp,*.py[cod],.*.py[cod],.env,.venv,vendor,bin,*.onnx,*.zip}'
-CORTEX_KEEPS='Name {}'
-
-function synchelper() {
-  LOCAL_PATH="$1"
-  REMOTE_PATH="$2"
-  if [ ! -d "$LOCAL_PATH" ] || [ ! "$(ls -A $LOCAL_PATH)" ] ; then
-    mkdir -p "$LOCAL_PATH"
-    unison "$LOCAL_PATH" "$REMOTE_PATH" -ignore "$CORTEX_IGNORES" -ignorenot "$CORTEX_KEEPS" -force "$REMOTE_PATH" -confirmbigdel=false -batch
-  fi
-  unison "$LOCAL_PATH" "$REMOTE_PATH" -ignore "$CORTEX_IGNORES" -ignorenot "$CORTEX_KEEPS" -repeat watch -silent
-}
-
-function fixsynchelper() {
-  LOCAL_PATH="$1"
-  REMOTE_PATH="$2"
-  unison "$LOCAL_PATH" "$REMOTE_PATH" -ignorearchives -ignore "$CORTEX_IGNORES" -ignorenot "$CORTEX_KEEPS"
-}
+alias sync-status='mutagen sync list'
+alias sync-monitor='mutagen sync monitor src'
+alias sync-pause='mutagen sync pause src'
+alias sync-resume='mutagen sync resume src'
+alias sync-terminate='mutagen sync terminate src'
 
 cgrep() {
   grep -R -C 3 --exclude-dir=.env --exclude-dir=.git --exclude-dir=vendor --exclude=*.pyc "$1" $CX_DIR
