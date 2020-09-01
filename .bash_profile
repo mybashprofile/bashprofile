@@ -1043,6 +1043,7 @@ alias kpwp='watch kubectl get pod -l apiName'
 sync-init() {
   mutagen sync create $HOME/$CORTEX_SRC_PATH ubuntu@dev:~/$CORTEX_SRC_PATH --name=cortex --sync-mode=two-way-safe --no-ignore-vcs --max-staging-file-size="10 MB" --ignore=*.swp,.*.swp,temp.*,*~,.*~,._*,.DS_Store,__pycache__,*.o,.*.o,*.tmp,.*.tmp,*.py[cod],.*.py[cod],.env,.venv,vendor,bin,*.onnx,*.pb,*.data*,*.zip
 }
+alias sync-list='mutagen sync list'
 alias sync-status='mutagen sync list'
 alias sync-monitor='mutagen sync monitor cortex'
 alias sync-pause='mutagen sync pause cortex'
