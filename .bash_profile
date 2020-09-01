@@ -1038,15 +1038,15 @@ alias kppw='watch kubectl get pod -l apiName'
 alias kpwp='watch kubectl get pod -l apiName'
 
 # This only needs to be executed once to create the session
-# Run `mutagen daemon register` for it to auto-start at startup; otherwise, run `mutagen sync monitor src` to start the session
+# Run `mutagen daemon register` for it to auto-start at startup; otherwise, run `mutagen sync monitor cortex` to start the session
 sync-init() {
-  mutagen sync create $HOME/$CORTEX_SRC_PATH ubuntu@dev:~/$CORTEX_SRC_PATH --name=src --sync-mode=two-way-safe --no-ignore-vcs --max-staging-file-size="10 MB" --ignore=*.swp,.*.swp,temp.*,*~,.*~,._*,.DS_Store,__pycache__,*.o,.*.o,*.tmp,.*.tmp,*.py[cod],.*.py[cod],.env,.venv,vendor,bin,*.onnx,*.pb,*.data*,*.zip
+  mutagen sync create $HOME/$CORTEX_SRC_PATH ubuntu@dev:~/$CORTEX_SRC_PATH --name=cortex --sync-mode=two-way-safe --no-ignore-vcs --max-staging-file-size="10 MB" --ignore=*.swp,.*.swp,temp.*,*~,.*~,._*,.DS_Store,__pycache__,*.o,.*.o,*.tmp,.*.tmp,*.py[cod],.*.py[cod],.env,.venv,vendor,bin,*.onnx,*.pb,*.data*,*.zip
 }
 alias sync-status='mutagen sync list'
-alias sync-monitor='mutagen sync monitor src'
-alias sync-pause='mutagen sync pause src'
-alias sync-resume='mutagen sync resume src'
-alias sync-terminate='mutagen sync terminate src'
+alias sync-monitor='mutagen sync monitor cortex'
+alias sync-pause='mutagen sync pause cortex'
+alias sync-resume='mutagen sync resume cortex'
+alias sync-terminate='mutagen sync terminate cortex'
 
 cgrep() {
   grep -R -C 3 --exclude-dir=.env --exclude-dir=.git --exclude-dir=vendor --exclude=*.pyc "$1" $CX_DIR
