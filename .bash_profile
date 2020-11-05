@@ -1022,7 +1022,6 @@ alias dnuke='drmvolumes; drmcontainersall; drmimagesall'
 
 ### CORTEX ###
 
-export CORTEX_DEV_DEFAULT_PREDICTOR_IMAGE_REGISTRY="764403040460.dkr.ecr.us-west-2.amazonaws.com/cortexlabs"
 export CORTEX_TELEMETRY_SENTRY_DSN="https://c334df915c014ffa93f2076769e5b334@sentry.io/1848098"
 export CORTEX_TELEMETRY_SEGMENT_WRITE_KEY="0WvoJyCey9z1W2EW7rYTPJUMRYat46dl"
 
@@ -1062,6 +1061,8 @@ if [ -f "$HOME/$CORTEX_SRC_PATH/cli/main.go" ]; then
   CX_DIR="$HOME/$CORTEX_SRC_PATH"
 fi
 if [ -n "$CX_DIR" ]; then
+  export CORTEX_DEV_DEFAULT_PREDICTOR_IMAGE_REGISTRY="764403040460.dkr.ecr.us-west-2.amazonaws.com/cortexlabs"
+
   alias cortex="$CX_DIR/bin/cortex"
 
   alias make-cortex="make --no-print-directory -C $HOME/$CORTEX_SRC_PATH"
