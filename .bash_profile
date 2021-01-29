@@ -625,6 +625,9 @@ alias lsm='llm'
 alias lsa='lla'
 alias lsc='llc'
 
+alias -- -='cd -'
+alias -- ~="cd $HOME"
+
 alias cd..="cd .."
 alias cd...="cd ../.."
 alias cd....="cd ../../.."
