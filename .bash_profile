@@ -1221,7 +1221,7 @@ complete -F _npm npm
 
 ### AUTOCOMPLETE BASH ALIASES ###
 
-alias_blacklist=( ssh cx cortex deploy )
+alias_blacklist=( ssh cx cortex deploy "--" "-" "~" )
 
 if ! shopt -oq posix; then
   # SOURCE: https://github.com/cykerway/complete-alias
