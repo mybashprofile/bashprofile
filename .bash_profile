@@ -1065,9 +1065,7 @@ if [ -f "$HOME/$CORTEX_SRC_PATH/cli/main.go" ]; then
   CX_DIR="$HOME/$CORTEX_SRC_PATH"
 fi
 if [ -n "$CX_DIR" ]; then
-  export CORTEX_DEV_DEFAULT_PREDICTOR_IMAGE_REGISTRY_AWS="764403040460.dkr.ecr.us-west-2.amazonaws.com/cortexlabs"
-  export CORTEX_DEV_DEFAULT_PREDICTOR_IMAGE_REGISTRY_GCP="us.gcr.io/david-269400/cortexlabs"
-  export CORTEX_DEV_DEFAULT_PREDICTOR_IMAGE_REGISTRY="cortexlabs" # used when running locally
+  export CORTEX_DEV_DEFAULT_PREDICTOR_IMAGE_REGISTRY="764403040460.dkr.ecr.us-west-2.amazonaws.com/cortexlabs"
 
   alias cortex="$CX_DIR/bin/cortex"
 
