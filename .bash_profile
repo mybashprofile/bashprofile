@@ -807,6 +807,19 @@ function kl() {
 }
 custom_complete 'kl' 'kubectl logs'
 
+function uk() {
+  cluster_name="$1"
+  if [ -z "$cluster_name" ]; then
+    cluster_name="cortex"
+  fi
+  region="$2"
+  if [ -z "$region" ]; then
+    region="us-west-2"
+  fi
+  echo $cluster_name
+  echo $region
+  aws eks update-kubeconfig --region=$region --name=$cluster_name
+}
 
 ### GIT ###
 
