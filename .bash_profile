@@ -816,8 +816,7 @@ function uk() {
   if [ -z "$region" ]; then
     region="us-west-2"
   fi
-  echo $cluster_name
-  echo $region
+  echo "aws eks update-kubeconfig --region=$region --name=$cluster_name"
   aws eks update-kubeconfig --region=$region --name=$cluster_name
 }
 
