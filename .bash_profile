@@ -190,6 +190,7 @@ function get_git_branch () {
 
 
 ### PATH ###
+
 function add_path () {
   if [ -f $1 ] || [ -d $1 ]; then
     export PATH="$1:$PATH"
@@ -227,13 +228,6 @@ if [ -f "$HOME/.gcloud/completion.bash.inc" ]; then source "$HOME/.gcloud/comple
 if [ -f "$HOME/google-cloud-sdk/path.bash.inc" ]; then source "$HOME/google-cloud-sdk/path.bash.inc"; fi  # Update PATH
 if [ -f "$HOME/google-cloud-sdk/completion.bash.inc" ]; then source "$HOME/google-cloud-sdk/completion.bash.inc"; fi  # Command completion
 
-function install-k9s-linux () {
-  sudo rm -rf /usr/local/bin/k9s
-  wget https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_x86_64.tar.gz
-  tar xvzf k9s_Linux_x86_64.tar.gz
-  sudo mv k9s /usr/local/bin/
-  rm LICENSE README.md k9s_*
-}
 
 ### SETUP CONFIGS ###
 
@@ -827,6 +821,7 @@ function uk() {
   aws eks update-kubeconfig --region=$region --name=$cluster_name
 }
 
+
 ### GIT ###
 
 alias gst='git status'
@@ -1123,24 +1118,9 @@ alias cxl="cortex logs"
 alias cxs="cortex status -w"
 alias cxg="cortex get -w"
 
-# old
-# mountdev() {
-#   mkdir -p $CORTEX_MOUNT_DIR
-#   sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR $CORTEX_MOUNT_DIR/
-#   echo "mounted to ${CORTEX_MOUNT_DIR/${HOME}/\~}"
-
-#   mkdir -p $CORTEX_TEST_MOUNT_DIR
-#   sshfs -o local -o IdentityFile=$CORTEX_KEY $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:/home/$CORTEX_LOGIN/test $CORTEX_TEST_MOUNT_DIR/
-#   echo "mounted to ${CORTEX_TEST_MOUNT_DIR/${HOME}/\~}"
-# }
-# syncdev() {
-#   mkdir -p $CORTEX_SYNC_DIR
-#   rsync --recursive --delete --force --compress --links --quiet --exclude .DS_Store --exclude ._* --exclude *.pyc --exclude .env/ --exclude vendor/ --exclude bin/ -e "ssh -i ${CORTEX_KEY}" $CORTEX_LOGIN@$CORTEX_CLUSTER_DEV_IP:$CORTEX_REMOTE_DIR/ $CORTEX_SYNC_DIR
-#   echo "synced to ${CORTEX_SYNC_DIR/${HOME}/\~}"
-# }
-
 
 ### MISC ###
+
 mounttemp() {
   MOUNT_DIR=$HOME/mnt/temp
   LOGIN=ubuntu
@@ -1154,7 +1134,84 @@ mounttemp() {
 }
 
 
+### INSTALLATION HELPERS ###  (most are idempotent and will update if already installed)
+
+function install-go-linux () {
+  sudo rm -rf /usr/local/go
+  version=$(curl --silent https://golang.org/doc/devel/release | grep -Eo 'go[0-9]+(\.[0-9]+)+' | sort -V | uniq | tail -1)
+  wget "https://dl.google.com/go/${version}.linux-amd64.tar.gz"
+  sudo tar -C /usr/local -xzf "${version}.linux-amd64.tar.gz"
+  rm -rf "${version}*"
+}
+
+function install-tools-linux () {
+  sudo apt update
+  sudo apt install -y python3-pip jq bash-completion
+  pip3 install yq
+  pip3 install awscli --upgrade --user
+}
+
+function install-tools-linux () {
+  sudo apt update
+  sudo apt install -y python3-pip jq bash-completion
+  pip3 install yq
+  pip3 install awscli --upgrade --user
+}
+
+function install-awscli () {
+  pip3 install awscli --upgrade --user
+}
+
+function install-docker-linux () {
+  sudo apt update
+  sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+  echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  sudo apt-get update
+  sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+  sudo usermod -aG docker $USER
+}
+
+function install-eksctl-linux () {
+  rm -rf /usr/local/bin/eksctl
+  curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+  sudo mv /tmp/eksctl /usr/local/bin/
+}
+
+function install-kubectl-linux () {
+  sudo rm -rf /usr/local/bin/kubectl
+  curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+  chmod +x ./kubectl
+  sudo mv ./kubectl /usr/local/bin/kubectl
+}
+
+function install-k9s-linux () {
+  sudo rm -rf /usr/local/bin/k9s
+  wget https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_x86_64.tar.gz
+  tar xvzf k9s_Linux_x86_64.tar.gz
+  sudo mv k9s /usr/local/bin/
+  rm LICENSE README.md k9s_*
+}
+
+function install-gcloud-linux () {
+  # https://cloud.google.com/sdk/docs/quickstart
+  # https://stackoverflow.com/questions/46236580/how-to-enable-shell-command-completion-for-gcloud
+  echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+  curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+  sudo apt-get update
+  sudo apt-get install google-cloud-sdk -y
+}
+
+function install-minikube-linux () {
+  rm -rf /usr/local/bin/minikube
+  curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+  chmod +x minikube
+  sudo install minikube /usr/local/bin/
+}
+
+
 ### CUSTOM COMPLETIONS ###
+
 # _deploy() {
 #   local cur=${COMP_WORDS[COMP_CWORD]}
 #   if [ "${COMP_CWORD}" == "1" ]; then
