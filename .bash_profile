@@ -227,6 +227,13 @@ if [ -f "$HOME/.gcloud/completion.bash.inc" ]; then source "$HOME/.gcloud/comple
 if [ -f "$HOME/google-cloud-sdk/path.bash.inc" ]; then source "$HOME/google-cloud-sdk/path.bash.inc"; fi  # Update PATH
 if [ -f "$HOME/google-cloud-sdk/completion.bash.inc" ]; then source "$HOME/google-cloud-sdk/completion.bash.inc"; fi  # Command completion
 
+function install-k9s-linux () {
+  sudo rm -rf /usr/local/bin/k9s
+  wget https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_x86_64.tar.gz
+  tar xvzf k9s_Linux_x86_64.tar.gz
+  sudo mv k9s /usr/local/bin/
+  rm LICENSE README.md k9s_*
+}
 
 ### SETUP CONFIGS ###
 
