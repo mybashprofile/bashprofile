@@ -1131,11 +1131,12 @@ apis-endpoint() {
 # This exports the $ENDPOINT env var
 cendpoint() {
   export ENDPOINT=$(cortex get $(cat cortex*.yaml | yq -r '.[0].name') -o json | jq -r '.[0].endpoint')
+  echo $ENDPOINT
 }
 
 # This exports the $ENDPOINT env var
 ccurl() {
-  cendpoint
+  export ENDPOINT=$(cortex get $(cat cortex*.yaml | yq -r '.[0].name') -o json | jq -r '.[0].endpoint')
   cccurl "$@"
 }
 
