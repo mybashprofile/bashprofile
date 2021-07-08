@@ -1118,6 +1118,42 @@ alias cxl="cortex logs"
 alias cxs="cortex status -w"
 alias cxg="cortex get -w"
 
+operator-endpoint() {
+  endpoint=$(kubectl get svc -n istio-system -o jsonpath="{.items[?(@.metadata.name=='ingressgateway-operator')].status.loadBalancer.ingress[0].hostname}")
+  echo "http://${endpoint}"
+}
+
+apis-endpoint() {
+  endpoint=$(kubectl get svc -n istio-system -o jsonpath="{.items[?(@.metadata.name=='ingressgateway-apis')].status.loadBalancer.ingress[0].hostname}")
+  echo "http://${endpoint}"
+}
+
+# This exports the $ENDPOINT env var
+cendpoint() {
+  export ENDPOINT=$(cortex get $(cat cortex*.yaml | yq -r '.[0].name') -o json | jq -r '.[0].endpoint')
+}
+
+# This exports the $ENDPOINT env var
+ccurl() {
+  cendpoint
+  cccurl "$@"
+}
+
+# This uses an already-set $ENDPOINT env var
+cccurl() {
+  query_params=""
+  for arg do
+    shift
+    if [[ "$arg" == "?"* ]]; then
+      query_params="$arg"
+      continue
+    fi
+    set -- "$@" "$arg"
+  done
+
+  curl -X POST -H "Content-Type: application/json" "${ENDPOINT}${query_params}" "$@"
+}
+
 
 ### MISC ###
 
