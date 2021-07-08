@@ -1130,13 +1130,15 @@ apis-endpoint() {
 
 # This exports the $ENDPOINT env var
 cendpoint() {
-  export ENDPOINT=$(cortex get $(cat cortex*.yaml | yq -r '.[0].name') -o json | jq -r '.[0].endpoint')
+  api_name=$(cat cortex*.yaml | yq -r '.[0].name')
+  export ENDPOINT=$(cortex get $api_name -o json | jq -r '.[0].endpoint')
   echo $ENDPOINT
 }
 
 # This exports the $ENDPOINT env var
 ccurl() {
-  export ENDPOINT=$(cortex get $(cat cortex*.yaml | yq -r '.[0].name') -o json | jq -r '.[0].endpoint')
+  api_name=$(cat cortex*.yaml | yq -r '.[0].name')
+  export ENDPOINT=$(cortex get $api_name -o json | jq -r '.[0].endpoint')
   cccurl "$@"
 }
 
@@ -1153,6 +1155,16 @@ cccurl() {
   done
 
   curl -X POST -H "Content-Type: application/json" "${ENDPOINT}${query_params}" "$@"
+}
+
+cget() {
+  api_name=$(cat cortex*.yaml | yq -r '.[0].name')
+  cortex get $api_name
+}
+
+cdelete() {
+  api_name=$(cat cortex*.yaml | yq -r '.[0].name')
+  cortex delete $api_name
 }
 
 
