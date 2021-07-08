@@ -1151,13 +1151,6 @@ function install-tools-linux () {
   pip3 install awscli --upgrade --user
 }
 
-function install-tools-linux () {
-  sudo apt update
-  sudo apt install -y python3-pip jq bash-completion
-  pip3 install yq
-  pip3 install awscli --upgrade --user
-}
-
 function install-awscli () {
   pip3 install awscli --upgrade --user
 }
