@@ -440,7 +440,7 @@ bashprofilecommit() {
   rm .bash_profile
   cp $bash_profile .bash_profile
   git -c "user.name=mybashprofile" -c "user.email=noemail" commit -am "$1" --author "mybashprofile <noemail>"
-  git push https://mybashprofile:$BASH_PROFILE_GITHUB_PW@github.com/mybashprofile/bashprofile.git
+  git push https://mybashprofile:$BASH_PROFILE_GITHUB_PERSONAL_ACCESS_TOKEN@github.com/mybashprofile/bashprofile.git
   cd ..
   rm -rf .tmp_bash_profile
 }
@@ -1035,7 +1035,7 @@ alias drmcontainersall='docker rm -f -v $(docker ps --no-trunc -aq) 2>/dev/null'
 alias drmimages='docker rmi $(docker images --no-trunc -q -f "dangling=true") 2>/dev/null'
 alias drmimagesall='docker rmi -f $(docker images --no-trunc -q) 2>/dev/null'
 alias drmvolumes='docker run -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker --rm martin/docker-cleanup-volumes'
-alias dnuke='drmvolumes; drmcontainersall; drmimagesall'
+alias dnuke='drmvolumes; drmcontainersall; drmimagesall; docker system prune --all --volumes --force; docker buildx prune --all --force'
 
 
 ### CORTEX ###
