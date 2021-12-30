@@ -791,13 +791,13 @@ alias kyi='kubectl get -o yaml ingress'
 alias kyv='kubectl get -o yaml virtualservices'
 alias kyn='kubectl get -o yaml node'
 
-alias kDp='kubectl delete pod --grace-period=1'
-alias kDj='kubectl delete job --grace-period=1'
-alias kDs='kubectl delete service --grace-period=1'
-alias kDd='kubectl delete deployment --grace-period=1'
-alias kDm='kubectl delete daemonset --grace-period=1'
-alias kDi='kubectl delete ingress --grace-period=1'
-alias kDv='kubectl delete virtualservices --grace-period=1'
+alias kDp='kubectl delete pod --grace-period=0 --force'
+alias kDj='kubectl delete job --grace-period=0 --force'
+alias kDs='kubectl delete service --grace-period=0 --force'
+alias kDd='kubectl delete deployment --grace-period=0 --force'
+alias kDm='kubectl delete daemonset --grace-period=0 --force'
+alias kDi='kubectl delete ingress --grace-period=0 --force'
+alias kDv='kubectl delete virtualservices --grace-period=0 --force'
 
 function kl() {
   until kubectl logs -f "$@"; do
