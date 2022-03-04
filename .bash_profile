@@ -91,10 +91,13 @@ set visible-stats on  # when listing possible file completions, put / after dire
 
 bind Space:magic-space  # Enable history expansion with space (typing !!<space> will replace the !! with your last command)
 bind "set mark-symlinked-directories on"  # Immediately add a trailing slash when autocompleting symlinks to directories
-# bind "set show-all-if-ambiguous on"  # Display matches for ambiguous patterns at first tab press
 # bind "set completion-ignore-case on"  # Perform file completion in a case insensitive fashion
 # bind "set completion-map-case on"  # Treat hyphens and underscores as equivalent
 
+bind 'TAB:menu-complete'  # If there are multiple matches for completion, Tab should cycle through them
+bind "set show-all-if-ambiguous on"  # Display a list of the matching files at first tab press
+bind "set menu-complete-display-prefix on"  # Perform partial (common) completion on the first Tab press, only start cycling full results on the second Tab press (from bash version 5)
+bind "set completion-display-width 1"  # Show the matches on a single line
 
 ### UTILITIES ###
 
@@ -877,8 +880,8 @@ alias grmb='rmbranch'
 alias grmbr='rmbranchremote'
 custom_complete 'rmbranch' 'git br -d'
 custom_complete 'rmbranchremote' 'git br -d'
-custom_complete 'grmb' 'git br -d'
-custom_complete 'grmbr' 'git br -d'
+custom_complete 'grmb' 'git br -D'
+custom_complete 'grmbr' 'git br -D'
 
 # To install LFS for first time: `brew install git-lfs` followed by `git lfs install`
 # To initialize in repo: `git lfs install`
