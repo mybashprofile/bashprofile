@@ -1,7 +1,3 @@
-### DOWNLOAD COMMAND ###
-
-# bash_profile=$HOME/.bashrc; if [ -f $HOME/.bash_profile ]; then bash_profile=$HOME/.bash_profile; fi; rm -rf $bash_profile.old; mv $bash_profile $bash_profile.old; wget --no-check-certificate https://raw.githubusercontent.com/mybashprofile/bashprofile/master/.bash_profile -O $bash_profile &> /dev/null; . $bash_profile; echo -e "\033[1;34m-> $bash_profile updated\033[0m"
-
 ### REQUIREMENTS ###
 
 # bash version 4.1+ (check with echo $BASH_VERSION)
@@ -15,7 +11,6 @@
 #   OSX instructions:
 #     brew install bash-completion@2
 
-
 if ((BASH_VERSINFO[0] < 4)); then
   echo "WARNING: You are running an older version of bash; upgrade to >= 4.1"
 fi
@@ -28,14 +23,11 @@ case $- in
       *) return;;
 esac
 
+
 ### PERSONALIZATIONS ###
 
 MY_EDITOR='code'
 MY_EDITOR_WAIT='code -w'
-
-# Cortex
-CORTEX_SRC_PATH=src/github.com/cortexlabs/cortex
-CORTEX_TEST_PATH=test
 
 # Load overridden personalizations
 if [ -f ~/.bash_profile_personalizations ]; then
@@ -89,8 +81,10 @@ shopt -s cdspell 2> /dev/null  # Correct spelling errors in arguments supplied t
 
 set visible-stats on  # when listing possible file completions, put / after directory names and * after programs
 
+bind "set enable-bracketed-paste off"  # Don't highlight text when pasting
 bind Space:magic-space  # Enable history expansion with space (typing !!<space> will replace the !! with your last command)
 bind "set mark-symlinked-directories on"  # Immediately add a trailing slash when autocompleting symlinks to directories
+# bind "set show-all-if-ambiguous on"  # Display matches for ambiguous patterns at first tab press
 # bind "set completion-ignore-case on"  # Perform file completion in a case insensitive fashion
 # bind "set completion-map-case on"  # Treat hyphens and underscores as equivalent
 
@@ -99,12 +93,19 @@ bind "set show-all-if-ambiguous on"  # Display a list of the matching files at f
 bind "set menu-complete-display-prefix on"  # Perform partial (common) completion on the first Tab press, only start cycling full results on the second Tab press (from bash version 5)
 bind "set completion-display-width 1"  # Show the matches on a single line
 
+
 ### UTILITIES ###
 
 BLACK="\033[0m"
-RED="\033[1;31m"
-GREEN="\033[1;32m"
-BLUE="\033[1;34m"
+BLACK_BOLD="\033[1;0m"
+RED="\033[31m"
+RED_BOLD="\033[1;31m"
+GREEN="\033[32m"
+GREEN_BOLD="\033[1;32m"
+BLUE="\033[34m"
+BLUE_BOLD="\033[1;34m"
+MAGENTA="\033[95m"
+MAGENTA_BOLD="\033[1;95m"
 
 function blue_echo () {
   echo -e "${BLUE}$1${BLACK}"
@@ -115,11 +116,14 @@ function green_echo () {
 function red_echo () {
   echo -e "${RED}$1${BLACK}"
 }
+function magenta_echo () {
+  echo -e "${MAGENTA}$1${BLACK}"
+}
 function created_echo () {
-  echo -e "${GREEN}Created: ${BLACK}$1"
+  echo -e "${GREEN_BOLD}Created: ${BLACK}$1"
 }
 function error_echo () {
-  echo -e "${RED}ERROR: ${BLACK}$1"
+  echo -e "${RED_BOLD}ERROR: ${BLACK}$1"
 }
 
 array_contains () {
@@ -207,14 +211,12 @@ if [ -d "$HOME/go" ]; then
 else
   export GOPATH="$HOME"
 fi
-
 add_path "$GOPATH/bin"
-export GO111MODULE=on
-
 add_path "/usr/local/go/bin"  # Default location
 add_path "/usr/local/opt/go/libexec/bin"  # OSX + Homebrew
 add_path "$HOME/.cargo/bin"
 add_path "$HOME/.local/bin"
+add_path "/opt/homebrew/bin"
 
 # rbenv
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
@@ -234,16 +236,45 @@ if [ -f "$HOME/google-cloud-sdk/completion.bash.inc" ]; then source "$HOME/googl
 ### SETUP CONFIGS ###
 
 if [ ! -f $HOME/.screenrc ]; then
-  echo -e "# Use screen -R [pid] to reattach to previous screen if possible\n# May want to add the following to .bash_profile:\n#   alias screen='screen -x -U -R'\n# where U=utf8, R=reattach if possible, x=multiplex\n\n\n# SETTINGS\n\ndefscrollback 10000        # Allow scrollback to 10,000 lines\nstartup_message off        # Disable startup message\nautodetach on              # Detach if network connection fails\ntermcapinfo xterm* ti@:te@ # Enable scroll\naltscreen on               # Clear screen after quitting vim\ndefutf8 on                 # Display utf8\nmsgwait 2                  # Show messages for only 2 seconds\n\n\n# KEYBINDINGS\n\nescape ^Xx        # ctrl+A is default escape command, on mac command+S is mapped to ctrl+X\nbind 'n' screen   # n for new\nbind ' ' next     # space because it is convenient and n is for new\nbind 'p' prev\nbind 'd' detatch\nbind 'h' help\nbind 'w' windows\n\n\n# Status bar that includes the name of the session, the current machine load, and the time.\n# hardstatus alwayslastline '%{= kG}[ %{G}%H | %{=kw}%?%-Lw%?%{g}%n*%f%t%?(%u)%? %{g}]%{w}%?%+Lw%?%?%=%{g}[ %{K}%l %{g}][ %{B}%Y-%m-%d %{W    }%c %{g}]'" > $HOME/.screenrc
+  echo -e "# Use screen -R [pid] to reattach to previous screen if possible\n# May want to add the following to .bash_profile:\n#   alias screen='screen -x -U -R'\n# where U=utf8, R=reattach if possible, x=multiplex\n\n\n# SETTINGS\n\nshell -\$SHELL              # Treat shell as login shell\ndefscrollback 10000        # Allow scrollback to 10,000 lines\nstartup_message off        # Disable startup message\nautodetach on              # Detach if network connection fails\ntermcapinfo xterm* ti@:te@ # Enable scroll\naltscreen on               # Clear screen after quitting vim\ndefutf8 on                 # Display utf8\nmsgwait 0.1                # Show messages for only 2 seconds\n\n\n# KEYBINDINGS\n\nescape ^Xx        # ctrl+A is default escape command, on mac command+S is mapped to ctrl+X\nbind 'n' screen   # n for new\nbind ' ' next     # space because it is convenient and n is for new\nbind 'p' prev\nbind 'd' detatch\nbind 'h' help\nbind 'w' windows\n\n\n# Status bar that includes the name of the session, the current machine load, and the time.\n# hardstatus alwayslastline '%{= kG}[ %{G}%H | %{=kw}%?%-Lw%?%{g}%n*%f%t%?(%u)%? %{g}]%{w}%?%+Lw%?%?%=%{g}[ %{K}%l %{g}][ %{B}%Y-%m-%d %{W    }%c %{g}]'" > $HOME/.screenrc
   created_echo "$HOME/.screenrc"
 fi
 
 if [ ! -f $HOME/.gitconfig ]; then
-  echo -e '[alias]\n  co = checkout\n  br = branch\n  st = status\n  ci = commit\n  a = add\n\n[core]\n  editor = vim\n\n[color]\n  branch = auto\n  diff = auto\n  status = auto\n\n[color "branch"]\n  current = yellow reverse\n  local = yellow\n  remote = green\n\n[color "diff"]\n  meta = yellow bold\n  frag = magenta bold\n  old = red bold\n  new = green bold\n\n[color "status"]\n  added = yellow\n  changed = green\n  untracked = cyan\n\n[pull]\n  rebase = false\n\n[push]\n  default = simple\n\n[filter "lfs"]\n  clean = git-lfs clean -- %f\n  smudge = git-lfs smudge -- %f\n  process = git-lfs filter-process\n  required = true\n\n[credential]\n  helper = cache' > $HOME/.gitconfig
+  echo -e '[user]\n  name = David Eliahu\n  email = davideliahu@gmail.com\n[alias]\n  co = checkout\n  br = branch\n  st = status\n  ci = commit\n  a = add\n\n[core]\n  editor = vim\n\n[color]\n  branch = auto\n  diff = auto\n  status = auto\n\n[color "branch"]\n  current = yellow reverse\n  local = yellow\n  remote = green\n\n[color "diff"]\n  meta = yellow bold\n  frag = magenta bold\n  old = red bold\n  new = green bold\n\n[color "status"]\n  added = yellow\n  changed = green\n  untracked = cyan\n\n[pull]\n  rebase = false\n\n[push]\n  default = simple\n\n[filter "lfs"]\n  clean = git-lfs clean -- %f\n  smudge = git-lfs smudge -- %f\n  process = git-lfs filter-process\n  required = true\n\n[credential]\n  helper = cache' > $HOME/.gitconfig
   created_echo "$HOME/.gitconfig"
-  echo -e 'Add this to the top of $HOME/.gitconfig:\n[user]\n  name = XXXXXX\n  email = XXXXXX\n'
 fi
 
+if [ -d "$HOME/Library/Application Support/k9s" ] && [ ! -f "$HOME/Library/Application Support/k9s/alias.yml" ]; then
+  echo -e 'alias:\n  d: apps/v1/deployments\n  da: apps/v1/daemonsets\n  m: apps/v1/daemonsets\n  j: batch/v1/jobs\n  p: v1/pods\n  n: v1/nodes\n  no: v1/nodes\n  a: v1/namespaces\n  na: v1/namespaces\n  s: v1/services\n  c: v1/configmaps\n  e: v1/events\n  r: v1/secrets\n  v: networking.istio.io/v1beta1/virtualservices' > "$HOME/Library/Application Support/k9s/alias.yml"
+  created_echo "$HOME/Library/Application Support/k9s/alias.yml"
+fi
+if [ -d $HOME/.config/k9s ] && [ ! -f $HOME/.config/k9s/alias.yml ]; then
+  echo -e 'alias:\n  d: apps/v1/deployments\n  da: apps/v1/daemonsets\n  m: apps/v1/daemonsets\n  j: batch/v1/jobs\n  p: v1/pods\n  n: v1/nodes\n  no: v1/nodes\n  a: v1/namespaces\n  na: v1/namespaces\n  s: v1/services\n  c: v1/configmaps\n  e: v1/events\n  r: v1/secrets\n  v: networking.istio.io/v1beta1/virtualservices' > $HOME/.config/k9s/alias.yml
+  created_echo $HOME/.config/k9s/alias.yml
+fi
+
+if [ -d "$HOME/Library/Application Support/k9s" ] && [ ! -f "$HOME/Library/Application Support/k9s/hotkey.yml" ]; then
+  echo -e 'hotKey:\n  # cmd+shift+n\n  nodes:\n    shortCut:    Shift-0\n    description: View nodes\n    command:     nodes\n  # cmd+shift+p\n  pods:\n    shortCut:    Shift-1\n    description: View pods\n    command:     pods\n  # cmd+shift+d\n  deployments:\n    shortCut:    Shift-2\n    description: View deployments\n    command:     deployments\n  # cmd+shift+m\n  daemonsets:\n    shortCut:    Shift-3\n    description: View daemonsets\n    command:     daemonsets\n  # cmd+shift+j\n  jobs:\n    shortCut:    Shift-4\n    description: View jobs\n    command:     jobs\n  # cmd+shift+a\n  namespaces:\n    shortCut:    Shift-5\n    description: View namespace\n    command:     namespaces\n  # cmd+shift+s\n  services:\n    shortCut:    Shift-6\n    description: View services\n    command:     services\n  # cmd+shift+c\n  configmaps:\n    shortCut:    Shift-7\n    description: View configmaps\n    command:     configmaps\n  # cmd+shift+e\n  events:\n    shortCut:    Shift-8\n    description: View events\n    command:     events\n  # cmd+shift+r\n  secrets:\n    shortCut:    Shift-9\n    description: View secrets\n    command:     secrets\n  # cmd+shift+v\n  virtualservices:\n    shortCut:    Shift-W\n    description: View virtualservices\n    command:     virtualservices\n\n# Check for overlaps with built-in aliases (via ?)' > "$HOME/Library/Application Support/k9s/hotkey.yml"
+  created_echo "$HOME/Library/Application Support/k9s/hotkey.yml"
+fi
+if [ -d $HOME/.config/k9s ] && [ ! -f $HOME/.config/k9s/hotkey.yml ]; then
+  echo -e 'hotKey:\n  # cmd+shift+n\n  nodes:\n    shortCut:    Shift-0\n    description: View nodes\n    command:     nodes\n  # cmd+shift+p\n  pods:\n    shortCut:    Shift-1\n    description: View pods\n    command:     pods\n  # cmd+shift+d\n  deployments:\n    shortCut:    Shift-2\n    description: View deployments\n    command:     deployments\n  # cmd+shift+m\n  daemonsets:\n    shortCut:    Shift-3\n    description: View daemonsets\n    command:     daemonsets\n  # cmd+shift+j\n  jobs:\n    shortCut:    Shift-4\n    description: View jobs\n    command:     jobs\n  # cmd+shift+a\n  namespaces:\n    shortCut:    Shift-5\n    description: View namespace\n    command:     namespaces\n  # cmd+shift+s\n  services:\n    shortCut:    Shift-6\n    description: View services\n    command:     services\n  # cmd+shift+c\n  configmaps:\n    shortCut:    Shift-7\n    description: View configmaps\n    command:     configmaps\n  # cmd+shift+e\n  events:\n    shortCut:    Shift-8\n    description: View events\n    command:     events\n  # cmd+shift+r\n  secrets:\n    shortCut:    Shift-9\n    description: View secrets\n    command:     secrets\n  # cmd+shift+v\n  virtualservices:\n    shortCut:    Shift-W\n    description: View virtualservices\n    command:     virtualservices\n\n# Check for overlaps with built-in aliases (via ?)' > $HOME/.config/k9s/hotkey.yml
+  created_echo $HOME/.config/k9s/hotkey.yml
+fi
+
+if [ -f "$HOME/Library/Application Support/k9s/config.yml" ]; then
+  sed -i -e 's/logoless:.*/logoless: true/g' "$HOME/Library/Application Support/k9s/config.yml"
+  sed -i -e 's/tail:.*/tail: 5000/g' "$HOME/Library/Application Support/k9s/config.yml"
+  sed -i -e 's/buffer:.*/buffer: 5000/g' "$HOME/Library/Application Support/k9s/config.yml"
+  sed -i -e 's/sinceSeconds:.*/sinceSeconds: -1/g' "$HOME/Library/Application Support/k9s/config.yml"
+fi
+if [ -f $HOME/.config/k9s/config.yml ]; then
+  sed -i -e 's/logoless:.*/logoless: true/g' $HOME/.config/k9s/config.yml
+  sed -i -e 's/tail:.*/tail: 5000/g' $HOME/.config/k9s/config.yml
+  sed -i -e 's/buffer:.*/buffer: 5000/g' $HOME/.config/k9s/config.yml
+  sed -i -e 's/sinceSeconds:.*/sinceSeconds: -1/g' $HOME/.config/k9s/config.yml
+fi
 
 ### SETUP BASH_COMPLETION ###
 
@@ -318,11 +349,20 @@ if ! shopt -oq posix; then
       created_echo "$BASH_COMPLETION_DIR/$filename"
     }
 
+    copy_completion() {
+      src=$1
+      filename=$2
+      if [ -f "$src" ]; then
+        /bin/cp -f "$src" "$BASH_COMPLETION_DIR/$filename"
+        created_echo "$BASH_COMPLETION_DIR/$filename"
+      fi
+    }
+
     if ( should_complete "npm" ); then
       command_completion "npm completion" "npm"
     fi
-    if ( should_complete "git" "git-completion.bash" ); then
-      download_completion "https://raw.githubusercontent.com/git/git/v$(git --version | awk '{print $3}')/contrib/completion/git-completion.bash" "git-completion.bash"
+    if ( should_complete "git" ); then
+      download_completion "https://raw.githubusercontent.com/git/git/v$(git --version | awk '{print $3}')/contrib/completion/git-completion.bash" "git"
     fi
     if ( should_complete "git" "git-prompt.sh" ); then
       download_completion "https://raw.githubusercontent.com/git/git/v$(git --version | awk '{print $3}')/contrib/completion/git-prompt.sh" "git-prompt.sh"
@@ -367,6 +407,14 @@ function parse_git_branch_prompt () {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
 
+function colorize_host_name () {
+  if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+    echo -e "${BLUE}${USER}@${HOSTNAME}${BLACK}"
+  else
+    echo -e "${GREEN}${USER}@${HOSTNAME}${BLACK}"
+  fi
+}
+
 if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
   debian_chroot=$(cat /etc/debian_chroot)
 fi
@@ -384,7 +432,7 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-  PS1='${debian_chroot:+($debian_chroot)}\[\033[32m\]\u@\h\[\033[00m\]:\[\033[01;36m\]$(shorten_dir "$(pwd)")\[\033[00;95m\]$(parse_virtualenv_prompt)\[\033[00;34m\]$(parse_git_branch_prompt)\[\033[00m\]\n\$ '
+  PS1='${debian_chroot:+($debian_chroot)}$(colorize_host_name):\[\033[01;36m\]$(shorten_dir "$(pwd)")\[\033[00;95m\]$(parse_virtualenv_prompt)\[\033[00;34m\]$(parse_git_branch_prompt)\[\033[00m\]\n\$ '
 else
   PS1='${debian_chroot:+($debian_chroot)}\u@\h:$(shorten_dir "$(pwd)")$(parse_virtualenv_prompt)$(parse_git_branch_prompt)\n\$ '
 fi
@@ -406,6 +454,9 @@ function get_bash_profile () {
   if [ -f $HOME/.bash_profile ]; then
     bash_profile=$HOME/.bash_profile
   fi
+  if [ -f $HOME/.usr_bash_profile ]; then
+    bash_profile=$HOME/.usr_bash_profile
+  fi
   echo $bash_profile
 }
 
@@ -418,6 +469,11 @@ rb() {
   bash_profile=$(get_bash_profile)
   . $bash_profile
   blue_echo "-> $bash_profile updated"
+}
+
+bashprofilecp() {
+  bash_profile=$(get_bash_profile)
+  cat $bash_profile | pbcopy
 }
 
 bashprofilediff() {
@@ -495,6 +551,9 @@ function maketar() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }
 # Create a ZIP archive of a file or folder. Usage: makezip test/
 function makezip() { zip -r "${1%%/}.zip" "$1" ; }
 
+alias encrypt='encrypt-gpg'
+alias decrypt='decrypt-gpg'
+
 function encrypt-gpg() {
   if [ -f $1 ] ; then
     gpg --output "${1}-encrypted" --symmetric --cipher-algo AES256 --no-symkey-cache "$1"
@@ -510,7 +569,6 @@ function encrypt-gpg() {
     echo "'${1}' is not a valid file!"
   fi
 }
-alias encrypt='encrypt-gpg'
 
 function decrypt-gpg() {
   if [ -f $1 ] ; then
@@ -533,7 +591,6 @@ function decrypt-gpg() {
     echo "'${1}' is not a valid file!"
   fi
 }
-alias decrypt='decrypt-gpg'
 
 function encrypt-openssl() {
   if [ -f $1 ] ; then
@@ -646,8 +703,6 @@ alias ......="cd ../../../../.."
 # Misc
 alias c='code'
 # alias c='clear'
-alias sublime='subl'
-alias s='subl'
 alias finder='open .'
 alias f='open .'
 alias o='open'
@@ -665,7 +720,13 @@ alias unmount='umount ~/mnt/*'
 alias unmount2='diskutil unmount ~/mnt/*'
 alias gssh='gcloud compute ssh'
 alias logoutall="pkill -u $(whoami)"
-alias findmissinglicenses='grep -R --exclude-dir={docs,examples,bin,config} --exclude={LICENSE,Dockerfile,requirements.txt,go.*,*.md,.*} -L "Copyright 2019 Cortex Labs, Inc" *'
+
+alias deletetrailingnewline="truncate -s -1"
+alias trimtrailingnewline="truncate -s -1"
+alias removetrailingnewline="truncate -s -1"
+alias deletetrailingchar="truncate -s -1"
+alias trimtrailingchar="truncate -s -1"
+alias removetrailingchar="truncate -s -1"
 
 # alias mv='mv -i' # Ask to overwrite
 function mv() {
@@ -725,6 +786,10 @@ function venv() {
 
 # Kubernetes
 alias k='kubectl'
+alias K='k9s'
+alias Kc='k9s --context'
+
+alias kc='kubectl config use-context'
 
 alias kp='kubectl get pod'
 alias kj='kubectl get job'
@@ -802,6 +867,9 @@ alias kDm='kubectl delete daemonset --grace-period=0 --force'
 alias kDi='kubectl delete ingress --grace-period=0 --force'
 alias kDv='kubectl delete virtualservices --grace-period=0 --force'
 
+alias ns="kubectl node-shell -n kube-system"
+alias kns="kubectl node-shell -n kube-system"
+
 function kl() {
   until kubectl logs -f "$@"; do
     sleep 2
@@ -810,24 +878,13 @@ function kl() {
 }
 custom_complete 'kl' 'kubectl logs'
 
-function uk() {
-  cluster_name="$1"
-  if [ -z "$cluster_name" ]; then
-    cluster_name="cortex"
-  fi
-  region="$2"
-  if [ -z "$region" ]; then
-    region="us-west-2"
-  fi
-  echo "aws eks update-kubeconfig --region=$region --name=$cluster_name"
-  aws eks update-kubeconfig --region=$region --name=$cluster_name
-}
-
 
 ### GIT ###
 
 alias gst='git status'
 alias st='git status'
+alias gstu='git status -uno'
+alias stu='git status -uno'
 alias d='git diff'
 alias gd='git diff'
 alias gdiff='git diff'
@@ -880,8 +937,8 @@ alias grmb='rmbranch'
 alias grmbr='rmbranchremote'
 custom_complete 'rmbranch' 'git br -d'
 custom_complete 'rmbranchremote' 'git br -d'
-custom_complete 'grmb' 'git br -D'
-custom_complete 'grmbr' 'git br -D'
+custom_complete 'grmb' 'git branch -D'
+custom_complete 'grmbr' 'git branch -D'
 
 # To install LFS for first time: `brew install git-lfs` followed by `git lfs install`
 # To initialize in repo: `git lfs install`
@@ -1040,143 +1097,13 @@ alias drmvolumes='docker run -v /var/run/docker.sock:/var/run/docker.sock -v /va
 alias dnuke='drmvolumes; drmcontainersall; drmimagesall; docker system prune --all --volumes --force; docker buildx prune --all --force'
 
 
-### CORTEX ###
-
-export CORTEX_TELEMETRY_SENTRY_DSN="https://c334df915c014ffa93f2076769e5b334@sentry.io/1848098"
-export CORTEX_TELEMETRY_SEGMENT_WRITE_KEY="0WvoJyCey9z1W2EW7rYTPJUMRYat46dl"
-
-# ca stands for "curl api"
-function ca() {
-  cmd=$(cortex get $1 | grep -o 'curl http.*')
-  echo "-> $cmd"
-  eval $cmd
-  echo
-}
-
-alias kpp='kubectl get pod -l apiName'
-alias kppw='watch kubectl get pod -l apiName'
-alias kpwp='watch kubectl get pod -l apiName'
-
-# This only needs to be executed once to create the session
-# Run `mutagen daemon register` for it to auto-start at startup; otherwise, run `mutagen sync monitor cortex` to start the session
-sync-init() {
-  mutagen sync create $HOME/$CORTEX_SRC_PATH ubuntu@dev:~/$CORTEX_SRC_PATH --name=cortex --sync-mode=two-way-safe --no-ignore-vcs --max-staging-file-size="10 MB" --ignore=*.swp,.*.swp,temp.*,*~,.*~,._*,.DS_Store,__pycache__,*.o,.*.o,*.tmp,.*.tmp,*.py[cod],.*.py[cod],.env,.venv,vendor,bin,*.onnx,*.pb,*.data*,*.zip
-}
-alias sync-list='mutagen sync list'
-alias sync-status='mutagen sync list'
-alias sync-monitor='mutagen sync monitor cortex'
-alias sync-pause='mutagen sync pause cortex'
-alias sync-resume='mutagen sync resume cortex'
-alias sync-terminate='mutagen sync terminate cortex'
-
-cgrep() {
-  grep -R -C 3 --exclude-dir=.env --exclude-dir=.git --exclude-dir=vendor --exclude=*.pyc "$1" $CX_DIR
-}
-cgrepi() {
-  grep -iR -C 3 --exclude-dir=.env --exclude-dir=.git --exclude-dir=vendor --exclude=*.pyc "$1" $CX_DIR
-}
-
-# Check for dev
-if [ -f "$HOME/$CORTEX_SRC_PATH/cli/main.go" ]; then
-  CX_DIR="$HOME/$CORTEX_SRC_PATH"
-fi
-if [ -n "$CX_DIR" ]; then
-  export CORTEX_DEV_DEFAULT_IMAGE_REGISTRY="764403040460.dkr.ecr.us-west-2.amazonaws.com/cortexlabs"
-  export CORTEX_CLI_PATH="$HOME/$CORTEX_SRC_PATH/bin/cortex"
-
-  alias cortex="$CX_DIR/bin/cortex"
-
-  alias make-cortex="make --no-print-directory -C $HOME/$CORTEX_SRC_PATH"
-  alias mc="make-cortex"
-  alias cm="make-cortex"
-
-  alias cxd="go run $CX_DIR/cli/main.go"
-
-  # Make commands
-  alias cxb="make-cortex cli"
-  alias devstart="make-cortex devstart"
-  alias killdev="make-cortex killdev"
-  alias up-dev="make-cortex cortex-up-dev"
-  alias down="make-cortex cortex-down"
-  alias registry-all="make-cortex registry-all"
-  alias registry-dev="make-cortex registry-dev"
-  alias lint="make-cortex lint"
-  alias t="make-cortex test"
-  alias t-go="make-cortex test-go"
-  alias t-python="make-cortex test-go"
-fi
-
-if command -v cortex > /dev/null; then
-  if [ -n "$CX_DIR" ]; then
-    if [ -f $CX_DIR/bin/cortex ]; then
-      source <(cortex completion bash)
-    fi
-  else
-    source <(cortex completion bash)
-  fi
-fi
-
-alias cxl="cortex logs"
-alias cxs="cortex status -w"
-alias cxg="cortex get -w"
-
-operator-endpoint() {
-  endpoint=$(kubectl get svc -n istio-system -o jsonpath="{.items[?(@.metadata.name=='ingressgateway-operator')].status.loadBalancer.ingress[0].hostname}")
-  echo "http://${endpoint}"
-}
-
-apis-endpoint() {
-  endpoint=$(kubectl get svc -n istio-system -o jsonpath="{.items[?(@.metadata.name=='ingressgateway-apis')].status.loadBalancer.ingress[0].hostname}")
-  echo "http://${endpoint}"
-}
-
-# This exports the $ENDPOINT env var
-cendpoint() {
-  api_name=$(cat cortex*.yaml | yq -r '.[0].name')
-  export ENDPOINT=$(cortex get $api_name -o json | jq -r '.[0].endpoint')
-  echo $ENDPOINT
-}
-
-# This exports the $ENDPOINT env var
-ccurl() {
-  api_name=$(cat cortex*.yaml | yq -r '.[0].name')
-  export ENDPOINT=$(cortex get $api_name -o json | jq -r '.[0].endpoint')
-  cccurl "$@"
-}
-
-# This uses an already-set $ENDPOINT env var
-cccurl() {
-  query_params=""
-  for arg do
-    shift
-    if [[ "$arg" == "?"* ]]; then
-      query_params="$arg"
-      continue
-    fi
-    set -- "$@" "$arg"
-  done
-
-  curl -X POST -H "Content-Type: application/json" "${ENDPOINT}${query_params}" "$@"
-}
-
-cget() {
-  api_name=$(cat cortex*.yaml | yq -r '.[0].name')
-  cortex get $api_name
-}
-
-cdelete() {
-  api_name=$(cat cortex*.yaml | yq -r '.[0].name')
-  cortex delete $api_name
-}
-
-
 ### MISC ###
 
 mounttemp() {
   MOUNT_DIR=$HOME/mnt/temp
   LOGIN=ubuntu
   IP=54.212.212.117
-  KEY="~/.ssh/cortex.pem"
+  KEY="~/.ssh/key.pem"
   REMOTE_DIR=/home/$LOGIN
 
   mkdir -p $MOUNT_DIR
@@ -1231,8 +1158,8 @@ function install-kubectl-linux () {
 
 function install-k9s-linux () {
   sudo rm -rf /usr/local/bin/k9s
-  wget https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_x86_64.tar.gz
-  tar xvzf k9s_Linux_x86_64.tar.gz
+  wget https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_amd64.tar.gz
+  tar xvzf k9s_Linux_amd64.tar.gz
   sudo mv k9s /usr/local/bin/
   rm LICENSE README.md k9s_*
 }
@@ -1251,6 +1178,12 @@ function install-minikube-linux () {
   curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
   chmod +x minikube
   sudo install minikube /usr/local/bin/
+}
+
+function install-node-shell () {
+  curl -LO https://github.com/kvaps/kubectl-node-shell/raw/master/kubectl-node_shell
+  chmod +x ./kubectl-node_shell
+  sudo mv ./kubectl-node_shell /usr/local/bin/kubectl-node_shell
 }
 
 
@@ -1340,7 +1273,7 @@ complete -F _npm npm
 
 ### AUTOCOMPLETE BASH ALIASES ###
 
-alias_blacklist=( ssh cx cortex deploy "--" "-" "~" )
+alias_blacklist=( ssh "--" "-" "~" )
 
 if ! shopt -oq posix; then
   # SOURCE: https://github.com/cykerway/complete-alias
@@ -1579,27 +1512,3 @@ if ! shopt -oq posix; then
     fi
   done
 fi
-
-
-### IMPORT EXTERNAL ALIASES ###
-if [ -f ~/.bash_aliases ]; then
-  . ~/.bash_aliases
-fi
-
-
-### SSH AGENT ### (deprecated in favor of ssh forwarding)
-
-# if [[ "$OSTYPE" != "darwin"* ]]; then
-#   if [[ -z "$SSH_AGENT_PID" || -z "$SSH_AUTH_SOCK" ]]; then
-#     SSH_AGENT_PID=$(pgrep -o ssh-agent)
-#     if [ ! -z ${SSH_AGENT_PID} ]; then
-#       SSH_AUTH_SOCK=$(sudo lsof -wbp ${SSH_AGENT_PID} | awk "/\/tmp\/ssh.*\/agent.[[:digit:]]{3,}/ { print \$9 }")
-#       if [ ! -z ${SSH_AUTH_SOCK} ]; then
-#         export SSH_AGENT_PID=${SSH_AGENT_PID}
-#         export SSH_AUTH_SOCK=${SSH_AUTH_SOCK}
-#       fi
-#     else
-#       eval "$(ssh-agent -s)" > /dev/null
-#     fi
-#   fi
-# fi
